@@ -9,7 +9,7 @@ class Jason extends MovingObject {
     this.sy = 0;
     this.sw = 28;
     this.sh = 21;
-    this.scale = 4;
+    this.scale = 6;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;
@@ -86,15 +86,12 @@ class Jason extends MovingObject {
       case 4800:
         this.sx = 112;
         break;
-      case 6000:
-        this.sx = 140;
-        break;
       default:
         break;
     }
 
-    if (window.frames > 6000) {
-      this.sy = 0;
+    if (window.frames > 4800) {
+      this.sx = 0;
       window.frames = 0;
     }
 
