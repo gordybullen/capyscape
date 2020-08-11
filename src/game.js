@@ -9,7 +9,7 @@ class Game {
     this.DIM_Y = 600;
     this.BG_COLOR = 'green';
     // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
-    // this.jason = new Jason({ pos: [0, 0], game: this });
+    this.jason = new Jason({ pos: [0, 0], game: this });
     this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
   };
 
@@ -27,7 +27,8 @@ class Game {
 
   allObjects() {
     // return [].concat(this.jason, this.farmer);
-    return [].concat(this.farmer);
+    return [].concat(
+      this.jason);
   };
 
   randomPosition() {
