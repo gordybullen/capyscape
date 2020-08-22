@@ -13,7 +13,7 @@ class Farmer extends MovingObject {
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;
-    this.image.src = '../farmer_walk_left.png';
+    this.image.src = './farmer_walk_left.png';
     // this.rightPressed = false;
     // this.leftPressed = false;
     // this.upPressed = false;
@@ -22,19 +22,19 @@ class Farmer extends MovingObject {
 
   draw(ctx) {
     if (window.rightPressed) {
-      this.image.src = '../farmer_walk_right.png';
+      this.image.src = './farmer_walk_right.png';
     } else if (window.leftPressed) {
-      this.image.src = '../farmer_walk_left.png';
+      this.image.src = './farmer_walk_left.png';
     } 
 
     // if (window.rightPressed) {
-    //   this.image.src = '../capy_walk_right_flipped.png';
+    //   this.image.src = './capy_walk_right_flipped.png';
     // } else if (window.leftPressed) {
-    //   this.image.src = '../capy_walk_left.png';
+    //   this.image.src = './capy_walk_left.png';
     // } else if (window.downPressed) {
-    //   this.image.src = '../capy_walk_down.png';
+    //   this.image.src = './capy_walk_down.png';
     // } else if (window.upPressed) {
-    //   this.image.src = '../capy_walk_up.png';
+    //   this.image.src = './capy_walk_up.png';
     // }
 
     if (window.rightPressed) {
