@@ -256,7 +256,7 @@ class Game {
 
   allObjects() {
     // return [].concat(this.jason, this.farmer);
-    return [].concat(this.farmer);
+    return [].concat(this.farmer, this.jason);
   };
 
   randomPosition() {
