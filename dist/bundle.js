@@ -420,7 +420,6 @@ const keyUpHandler = e => {
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
-
 /***/ }),
 
 /***/ "./src/jason.js":
