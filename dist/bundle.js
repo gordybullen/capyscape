@@ -150,8 +150,8 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       }
     }
 
-    if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) < 400) {
-      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + this.speed / 6);
+    if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) < 250) {
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed);
 
       // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
       //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
@@ -164,6 +164,11 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
       // }
       // this.vel[0] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+  }
+
+    if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) > 250 && !this.change) {
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].randomVec(this.speed);
+      this.change = true;
     }
   }
 
