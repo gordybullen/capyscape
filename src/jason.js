@@ -9,7 +9,7 @@ class Jason extends MovingObject {
     this.sy = 0;
     this.sw = 28;
     this.sh = 21;
-    this.scale = 6;
+    this.scale = 4;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;

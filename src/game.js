@@ -10,7 +10,8 @@ class Game {
     this.BG_COLOR = 'green';
     // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
     this.jason = new Jason({ pos: [0, 0], game: this });
-    this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
+    // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
+    this.farmer = new Farmer({ pos: [500, 300], game: this });
   };
 
   // add(object) {
@@ -49,7 +50,8 @@ class Game {
   };
 
   moveObjects(timeDelta) {
-    this.allObjects().forEach(object => object.move(timeDelta));
+    // this.allObjects().forEach(object => object.move(timeDelta));
+    this.farmer.move(timeDelta);
   };
 
   wrap(pos) {
@@ -58,30 +60,30 @@ class Game {
     ];
   };
 
-  isOutOfBounds(pos) {
-    return (pos[0] < 0) || (pos[1] < 0) ||
-      (pos[0] > this.DIM_X) || (pos[1] > this.DIM_Y);
+  isOutOfBounds(object) {
+    return (object.pos[0] < 0 + object.sw) || (object.pos[1] < 0 + object.sh) ||
+      (object.pos[0] > this.DIM_X - object.sw * 3) || (object.pos[1] > this.DIM_Y - object.sh * 3);
   };
 
-  checkCollisions() {
-    const allObjects = this.allObjects();
+  // checkCollisions() {
+  //   const allObjects = this.allObjects();
 
-    for (let i = 0; i < allObjects.length; i++) {
-      for (let j = 0; j < allObjects.length; j++) {
-        const obj1 = allObjects[i];
-        const obj2 = allObjects[j];
+  //   for (let i = 0; i < allObjects.length; i++) {
+  //     for (let j = 0; j < allObjects.length; j++) {
+  //       const obj1 = allObjects[i];
+  //       const obj2 = allObjects[j];
 
-        if (obj1.isCollidedWith(obj2) && obj1 !== obj2) {
-          const collision = obj1.collideWith(obj2);
-          if (collision) return;
-        }
-      }
-    }
-  };
+  //       if (obj1.isCollidedWith(obj2) && obj1 !== obj2) {
+  //         const collision = obj1.collideWith(obj2);
+  //         if (collision) return;
+  //       }
+  //     }
+  //   }
+  // };
 
   step(timeDelta) {
     this.moveObjects(timeDelta);
-    this.checkCollisions();
+    // this.checkCollisions();
   };
 
   // remove(object) {

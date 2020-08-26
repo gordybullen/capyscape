@@ -96,6 +96,8 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _moving_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./moving_object */ "./src/moving_object.js");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util */ "./src/util.js");
+
 
 
 class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
@@ -112,18 +114,74 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.height = this.sh * this.scale;
     this.image = new Image;
     this.image.src = './farmer_walk_left.png';
+    this.speed = 4;
+    this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].randomVec(this.speed);
+    this.radius = 20;
     // this.rightPressed = false;
     // this.leftPressed = false;
     // this.upPressed = false;
     // this.downPressed = false;
   };
 
-  draw(ctx) {
-    if (window.rightPressed) {
-      this.image.src = './farmer_walk_right.png';
-    } else if (window.leftPressed) {
+  move(timeDelta = timeDelta || 1) {
+    // timeDelta is number of milliseconds since last move
+    // if the computer is busy the time delta will be larger
+    // in this case the MovingObject should move farther in this frame
+    // velocity of object is how far it should move in 1/60th of a second
+    const velocityScale = timeDelta / this.NORMAL_FRAME_TIME_DELTA;
+    const offsetX = this.vel[0] * velocityScale;
+    const offsetY = this.vel[1] * velocityScale;
+
+    this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+
+    if (Math.sign(this.vel[0]) === -1) {
       this.image.src = './farmer_walk_left.png';
-    } 
+    } else {
+      this.image.src = './farmer_walk_right.png';
+    }
+
+    if (this.game.isOutOfBounds(this)) {
+      if (this.isWrappable) {
+        this.pos = this.game.wrap(this.pos);
+      } else if (this.pos[0] + this.sw * 3 > this.game.DIM_X || this.pos[0] < 0) {
+        this.vel[0] = -this.vel[0];
+      } else if (this.pos[1] < 0 || this.pos[1] + this.sh * 3 > this.game.DIM_Y) {
+        this.vel[1] = -this.vel[1];
+      }
+    }
+
+    if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) < 400) {
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + this.speed / 6);
+
+      // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
+      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // } else if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
+      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
+      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      //   this.vel[0] = -this.vel[0];
+      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
+      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // }
+      // this.vel[0] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+    }
+  }
+
+  // move() {
+  //   if (Util.dist(this.pos, this.game.jason.pos) < 200) {
+  //     this.dest = this.game.jason.pos;
+  //   }
+  //   // else if (Util.distance(this.dest, this.pos) < 5) {
+  //   //   this.dest = this.randomVec();
+  //   // }
+  // }
+
+  draw(ctx) {
+    // if (window.rightPressed) {
+    //   this.image.src = './farmer_walk_right.png';
+    // } else if (window.leftPressed) {
+    //   this.image.src = './farmer_walk_left.png';
+    // } 
 
     // if (window.rightPressed) {
     //   this.image.src = './capy_walk_right_flipped.png';
@@ -135,77 +193,77 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     //   this.image.src = './capy_walk_up.png';
     // }
 
-    if (window.rightPressed) {
-      this.pos[0] += this.dx;
-      if (this.pos[0] + this.dx + this.width > this.game.DIM_X) {
-        this.pos[0] = this.game.DIM_X - this.width;
-      }
-    } else if (window.leftPressed) {
-      this.pos[0] -= this.dx;
-      if (this.pos[0] < 0) {
-        this.pos[0] = 0;
-      }
-    }
+    // if (window.rightPressed) {
+    //   this.pos[0] += this.dx;
+    //   if (this.pos[0] + this.dx + this.width > this.game.DIM_X) {
+    //     this.pos[0] = this.game.DIM_X - this.width;
+    //   }
+    // } else if (window.leftPressed) {
+    //   this.pos[0] -= this.dx;
+    //   if (this.pos[0] < 0) {
+    //     this.pos[0] = 0;
+    //   }
+    // }
 
-    if (window.upPressed) {
-      this.pos[1] += this.dy;
-      if (this.pos[1] + this.dy < 0) {
-        this.pos[1] = 0;
-      }
-    } else if (window.downPressed) {
-      this.pos[1] -= this.dy;
-      if (this.pos[1] - this.dy + this.height > this.game.DIM_Y) {
-        this.pos[1] = this.game.DIM_Y - this.height;
-      }
-    }
+    // if (window.upPressed) {
+    //   this.pos[1] += this.dy;
+    //   if (this.pos[1] + this.dy < 0) {
+    //     this.pos[1] = 0;
+    //   }
+    // } else if (window.downPressed) {
+    //   this.pos[1] -= this.dy;
+    //   if (this.pos[1] - this.dy + this.height > this.game.DIM_Y) {
+    //     this.pos[1] = this.game.DIM_Y - this.height;
+    //   }
+    // }
 
-    if (window.upPressed && !window.rightPressed) {
-      window.frames += 1;
-    } else if (window.downPressed && !window.leftPressed) {
-      window.frames += 1;
-    } else if (window.upPressed && window.rightPressed) {
-      window.frames += 1;
-    } else if (window.downPressed && window.leftPressed) {
-      window.frames += 1;
-    } else if (!window.upPressed && window.rightPressed) {
-      window.frames += 1;
-    } else if (!window.downPressed && window.leftPressed) {
-      window.frames += 1;
-    }
+    // if (window.upPressed && !window.rightPressed) {
+    //   window.frames += 1;
+    // } else if (window.downPressed && !window.leftPressed) {
+    //   window.frames += 1;
+    // } else if (window.upPressed && window.rightPressed) {
+    //   window.frames += 1;
+    // } else if (window.downPressed && window.leftPressed) {
+    //   window.frames += 1;
+    // } else if (!window.upPressed && window.rightPressed) {
+    //   window.frames += 1;
+    // } else if (!window.downPressed && window.leftPressed) {
+    //   window.frames += 1;
+    // }
 
-    switch (window.frames) {
-      case 0:
-        this.sx = 0;
-        break;
-      case 8:
-        this.sx = 27;
-        break;
-      case 16:
-        this.sx = 54;
-        break;
-      case 24:
-        this.sx = 81;
-        break;
-      case 32:
-        this.sx = 108;
-        break;
-      case 40:
-        this.sx = 135;
-        break;
-      case 48:
-        this.sx = 162;
-        break;
-      case 56:
-        this.sx = 189;
-        break;
-      default:
-        break;
-    }
+    // switch (window.frames) {
+    //   case 0:
+    //     this.sx = 0;
+    //     break;
+    //   case 8:
+    //     this.sx = 27;
+    //     break;
+    //   case 16:
+    //     this.sx = 54;
+    //     break;
+    //   case 24:
+    //     this.sx = 81;
+    //     break;
+    //   case 32:
+    //     this.sx = 108;
+    //     break;
+    //   case 40:
+    //     this.sx = 135;
+    //     break;
+    //   case 48:
+    //     this.sx = 162;
+    //     break;
+    //   case 56:
+    //     this.sx = 189;
+    //     break;
+    //   default:
+    //     break;
+    // }
 
-    if (window.frames > 56) {
-      this.sx = 0;
-      window.frames = 0;
-    }
+    // if (window.frames > 56) {
+    //   this.sx = 0;
+    //   window.frames = 0;
+    // }
 
     ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
   };
@@ -239,7 +297,8 @@ class Game {
     this.BG_COLOR = 'green';
     // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [0, 0], game: this });
-    this.farmer = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
+    // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
+    this.farmer = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this });
   };
 
   // add(object) {
@@ -278,7 +337,8 @@ class Game {
   };
 
   moveObjects(timeDelta) {
-    this.allObjects().forEach(object => object.move(timeDelta));
+    // this.allObjects().forEach(object => object.move(timeDelta));
+    this.farmer.move(timeDelta);
   };
 
   wrap(pos) {
@@ -287,30 +347,30 @@ class Game {
     ];
   };
 
-  isOutOfBounds(pos) {
-    return (pos[0] < 0) || (pos[1] < 0) ||
-      (pos[0] > this.DIM_X) || (pos[1] > this.DIM_Y);
+  isOutOfBounds(object) {
+    return (object.pos[0] < 0 + object.sw) || (object.pos[1] < 0 + object.sh) ||
+      (object.pos[0] > this.DIM_X - object.sw * 3) || (object.pos[1] > this.DIM_Y - object.sh * 3);
   };
 
-  checkCollisions() {
-    const allObjects = this.allObjects();
+  // checkCollisions() {
+  //   const allObjects = this.allObjects();
 
-    for (let i = 0; i < allObjects.length; i++) {
-      for (let j = 0; j < allObjects.length; j++) {
-        const obj1 = allObjects[i];
-        const obj2 = allObjects[j];
+  //   for (let i = 0; i < allObjects.length; i++) {
+  //     for (let j = 0; j < allObjects.length; j++) {
+  //       const obj1 = allObjects[i];
+  //       const obj2 = allObjects[j];
 
-        if (obj1.isCollidedWith(obj2) && obj1 !== obj2) {
-          const collision = obj1.collideWith(obj2);
-          if (collision) return;
-        }
-      }
-    }
-  };
+  //       if (obj1.isCollidedWith(obj2) && obj1 !== obj2) {
+  //         const collision = obj1.collideWith(obj2);
+  //         if (collision) return;
+  //       }
+  //     }
+  //   }
+  // };
 
   step(timeDelta) {
     this.moveObjects(timeDelta);
-    this.checkCollisions();
+    // this.checkCollisions();
   };
 
   // remove(object) {
@@ -443,7 +503,7 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.sy = 0;
     this.sw = 28;
     this.sh = 21;
-    this.scale = 6;
+    this.scale = 4;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;
@@ -555,50 +615,68 @@ __webpack_require__.r(__webpack_exports__);
 class MovingObject {
   constructor(options) {
     this.pos = options.pos;
-    this.vel = options.vel;
     this.radius = options.radius;
     this.color = options.color;
     this.game = options.game;
     this.isWrappable = false;
     this.NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+    this.dest = null;
   };
 
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.arc(this.pos[0], this.pos[1], this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.closePath();
-  };
+  // draw(ctx) {
+  //   ctx.beginPath();
+  //   ctx.arc(this.pos[0], this.pos[1], this.radius, 0, Math.PI * 2);
+  //   ctx.fillStyle = this.color;
+  //   ctx.fill();
+  //   ctx.closePath();
+  // };
 
   move(timeDelta = timeDelta || 1) {
     // timeDelta is number of milliseconds since last move
     // if the computer is busy the time delta will be larger
     // in this case the MovingObject should move farther in this frame
     // velocity of object is how far it should move in 1/60th of a second
-    // const velocityScale = timeDelta / this.NORMAL_FRAME_TIME_DELTA;
-    // const offsetX = this.vel[0] * velocityScale;
-    // const offsetY = this.vel[1] * velocityScale;
+    const velocityScale = timeDelta / this.NORMAL_FRAME_TIME_DELTA;
+    const offsetX = this.vel[0] * velocityScale;
+    const offsetY = this.vel[1] * velocityScale;
 
-    // this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+    this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
 
-    // if (this.game.isOutOfBounds(this.pos)) {
-    //   if (this.isWrappable) {
-    //     this.pos = this.game.wrap(this.pos);
-    //   } else {
-    //     this.game.remove(this);
-    //   }
-    // }
-  };
+    if (this.game.isOutOfBounds(this)) {
+      if (this.isWrappable) {
+        this.pos = this.game.wrap(this.pos);
+      } else if (this.pos[0] > this.game.DIM_X || this.pos[0] < 0) {
+        this.vel[0] = -this.vel[0];
+      } else if (this.pos[1] < 0 || this.pos[1] > this.game.DIM_Y) {
+        this.vel[1] = -this.vel[1];
+      }
+    }
 
-  isCollidedWith(otherObject) {
-    const centerDist = _util__WEBPACK_IMPORTED_MODULE_0__["default"].dist(this.pos, otherObject.pos);
-    return centerDist < (this.radius + otherObject.radius);
-  };
+    if (_util__WEBPACK_IMPORTED_MODULE_0__["default"].dist(this.pos, this.game.jason.pos) < 400) {
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_0__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_0__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + this.speed / 2);
 
-  collideWith(otherObject) {
+      // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
+      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // } else if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
+      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
+      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      //   this.vel[0] = -this.vel[0];
+      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
+      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+      // }
+      // this.vel[0] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
+    }
+  }
 
-  };
+  // isCollidedWith(otherObject) {
+  //   const centerDist = Util.dist(this.pos, otherObject.pos);
+  //   return centerDist < (this.radius + otherObject.radius);
+  // };
+
+  // collideWith(otherObject) {
+
+  // };
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (MovingObject);
