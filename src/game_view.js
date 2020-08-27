@@ -9,6 +9,10 @@ class GameView {
 
   start() {
     // start the animation
+    // setInterval(() => {
+    //   this.game.farmer.frames += 1;
+    // }, 0.5)
+    
     requestAnimationFrame(this.animate.bind(this));
   };
 

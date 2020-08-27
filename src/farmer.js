@@ -18,6 +18,7 @@ class Farmer extends MovingObject {
     this.speed = 4;
     this.vel = Util.randomVec(this.speed);
     this.radius = 20;
+    this.frames = 0;
     // this.rightPressed = false;
     // this.leftPressed = false;
     // this.upPressed = false;
@@ -52,7 +53,7 @@ class Farmer extends MovingObject {
     }
 
     if (Util.dist(this.pos, this.game.jason.pos) < 250) {
-      this.vel = Util.scale(Util.dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed);
+      this.vel = Util.scale(Util.dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + 2);
 
       // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
       //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
@@ -137,6 +138,16 @@ class Farmer extends MovingObject {
     //   window.frames += 1;
     // }
 
+    this.frames += 1;
+    
+    if (this.frames % 10 === 0) {
+      this.sx += 27;
+    }
+    
+    if (this.sx > 189) {
+      this.sx = 0;
+      this.frames = 0;
+    }
     // switch (window.frames) {
     //   case 0:
     //     this.sx = 0;
@@ -164,11 +175,6 @@ class Farmer extends MovingObject {
     //     break;
     //   default:
     //     break;
-    // }
-
-    // if (window.frames > 56) {
-    //   this.sx = 0;
-    //   window.frames = 0;
     // }
 
     ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);

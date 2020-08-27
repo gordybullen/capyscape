@@ -117,6 +117,7 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.speed = 4;
     this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].randomVec(this.speed);
     this.radius = 20;
+    this.frames = 0;
     // this.rightPressed = false;
     // this.leftPressed = false;
     // this.upPressed = false;
@@ -151,7 +152,7 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     }
 
     if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) < 250) {
-      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed);
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + 2);
 
       // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
       //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
@@ -236,6 +237,16 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     //   window.frames += 1;
     // }
 
+    this.frames += 1;
+    
+    if (this.frames % 10 === 0) {
+      this.sx += 27;
+    }
+    
+    if (this.sx > 189) {
+      this.sx = 0;
+      this.frames = 0;
+    }
     // switch (window.frames) {
     //   case 0:
     //     this.sx = 0;
@@ -265,11 +276,6 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     //     break;
     // }
 
-    // if (window.frames > 56) {
-    //   this.sx = 0;
-    //   window.frames = 0;
-    // }
-
     ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
   };
 };
@@ -297,13 +303,14 @@ __webpack_require__.r(__webpack_exports__);
 
 class Game {
   constructor() {
-    this.DIM_X = 1000;
-    this.DIM_Y = 600;
+    this.DIM_X = 1200;
+    this.DIM_Y = 800;
     this.BG_COLOR = 'green';
     // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [0, 0], game: this });
     // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
     this.farmer = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this });
+    this.farmer2 = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this });
   };
 
   // add(object) {
@@ -320,7 +327,7 @@ class Game {
 
   allObjects() {
     // return [].concat(this.jason, this.farmer);
-    return [].concat(this.farmer, this.jason);
+    return [].concat(this.farmer, this.jason, this.farmer2);
   };
 
   randomPosition() {
@@ -344,6 +351,7 @@ class Game {
   moveObjects(timeDelta) {
     // this.allObjects().forEach(object => object.move(timeDelta));
     this.farmer.move(timeDelta);
+    this.farmer2.move(timeDelta);
   };
 
   wrap(pos) {
@@ -412,6 +420,10 @@ class GameView {
 
   start() {
     // start the animation
+    // setInterval(() => {
+    //   this.game.farmer.frames += 1;
+    // }, 0.5)
+    
     requestAnimationFrame(this.animate.bind(this));
   };
 
@@ -448,8 +460,8 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  canvas.width = 1000;
-  canvas.height = 600;
+  canvas.width = 1200;
+  canvas.height = 800;
   window.MovingObject = _moving_object__WEBPACK_IMPORTED_MODULE_1__["default"];
   window.ctx = ctx;
   window.frames = 0;
@@ -508,7 +520,7 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.sy = 0;
     this.sw = 28;
     this.sh = 21;
-    this.scale = 4;
+    this.scale = 3;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;

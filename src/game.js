@@ -5,13 +5,14 @@ import Farmer from './farmer';
 
 class Game {
   constructor() {
-    this.DIM_X = 1000;
-    this.DIM_Y = 600;
+    this.DIM_X = 1200;
+    this.DIM_Y = 800;
     this.BG_COLOR = 'green';
     // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
     this.jason = new Jason({ pos: [0, 0], game: this });
     // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
     this.farmer = new Farmer({ pos: [500, 300], game: this });
+    this.farmer2 = new Farmer({ pos: [500, 300], game: this });
   };
 
   // add(object) {
@@ -28,7 +29,7 @@ class Game {
 
   allObjects() {
     // return [].concat(this.jason, this.farmer);
-    return [].concat(this.farmer, this.jason);
+    return [].concat(this.farmer, this.jason, this.farmer2);
   };
 
   randomPosition() {
@@ -52,6 +53,7 @@ class Game {
   moveObjects(timeDelta) {
     // this.allObjects().forEach(object => object.move(timeDelta));
     this.farmer.move(timeDelta);
+    this.farmer2.move(timeDelta);
   };
 
   wrap(pos) {
