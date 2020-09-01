@@ -19,6 +19,18 @@ class Jason extends MovingObject {
     // this.upPressed = false;
     // this.downPressed = false;
   };
+
+  collideWithStationaryObject(stationaryObj) {
+    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width) {
+      this.pos[0] += this.dx;
+    } else if (this.pos[0] > stationaryObj.pos[0] - this.width) {
+      this.pos[0] -= this.dx;
+    } else if (this.pos[1] + this.height > stationaryObj.pos[1]) {
+      this.pos[1] -= this.dx;
+    } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
+      this.pos[1] += this.dx;  
+    }  
+  }
   
   draw(ctx) {
     if (window.rightPressed) {
@@ -37,6 +49,7 @@ class Jason extends MovingObject {
 
     if (window.rightPressed) {
       this.pos[0] += this.dx;
+
       if (this.pos[0] + this.dx + this.width > this.game.DIM_X) {
         this.pos[0] = this.game.DIM_X - this.width;
       }
@@ -99,7 +112,7 @@ class Jason extends MovingObject {
     }
 
     ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
-  };
-};
+  }
+}
 
 export default Jason;

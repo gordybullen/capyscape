@@ -1,5 +1,6 @@
 import MovingObject from './moving_object';
 import Util from './util';
+import Jason from './jason';
 
 class Farmer extends MovingObject {
   constructor(options) {
@@ -19,10 +20,6 @@ class Farmer extends MovingObject {
     this.vel = Util.randomVec(this.speed);
     this.radius = 20;
     this.frames = 0;
-    // this.rightPressed = false;
-    // this.leftPressed = false;
-    // this.upPressed = false;
-    // this.downPressed = false;
   };
 
   move(timeDelta = timeDelta || 1) {
@@ -52,21 +49,13 @@ class Farmer extends MovingObject {
       }
     }
 
+    // if Jason is in range of farmer, farmer will lock on to Jason
     if (Util.dist(this.pos, this.game.jason.pos) < 250) {
-      this.vel = Util.scale(Util.dir([-(this.pos[0] - this.game.jason.pos[0]), -(this.pos[1] - this.game.jason.pos[1])]), this.speed + 2);
-
-      // if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
-      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
-      // } else if (this.pos[0] < this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
-      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
-      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === -1) {
-      //   this.vel[1] = -Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
-      //   this.vel[0] = -this.vel[0];
-      // } else if (this.pos[0] > this.game.jason.pos[0] && Math.sign(this.vel[0]) === 1) {
-      //   this.vel[1] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
-      // }
-      // this.vel[0] = Math.atan2(this.pos[1] - this.game.jason.pos[1], this.pos[0] - this.game.jason.pos[0]);
-  }
+      this.vel = Util.scale(Util.dir(
+        [-(this.pos[0] - this.game.jason.pos[0]), 
+        -(this.pos[1] - this.game.jason.pos[1])]
+        ), this.speed + 0.5);
+    }
 
     if (Util.dist(this.pos, this.game.jason.pos) > 250 && !this.change) {
       this.vel = Util.randomVec(this.speed);
@@ -74,109 +63,31 @@ class Farmer extends MovingObject {
     }
   }
 
-  // move() {
-  //   if (Util.dist(this.pos, this.game.jason.pos) < 200) {
-  //     this.dest = this.game.jason.pos;
-  //   }
-  //   // else if (Util.distance(this.dest, this.pos) < 5) {
-  //   //   this.dest = this.randomVec();
-  //   // }
-  // }
+  collideWith(otherObject) {
+    if (otherObject instanceof Farmer) {
+      this.vel[0] = -this.vel[0];
+      // otherObject.vel[0] = -this.vel[0];
+      // otherObject.vel[0] = -otherObject.vel[0];
+    } else if (otherObject instanceof Jason) {
+      alert("Game over")
+    }
+  }
+
 
   draw(ctx) {
-    // if (window.rightPressed) {
-    //   this.image.src = './farmer_walk_right.png';
-    // } else if (window.leftPressed) {
-    //   this.image.src = './farmer_walk_left.png';
-    // } 
-
-    // if (window.rightPressed) {
-    //   this.image.src = './capy_walk_right_flipped.png';
-    // } else if (window.leftPressed) {
-    //   this.image.src = './capy_walk_left.png';
-    // } else if (window.downPressed) {
-    //   this.image.src = './capy_walk_down.png';
-    // } else if (window.upPressed) {
-    //   this.image.src = './capy_walk_up.png';
-    // }
-
-    // if (window.rightPressed) {
-    //   this.pos[0] += this.dx;
-    //   if (this.pos[0] + this.dx + this.width > this.game.DIM_X) {
-    //     this.pos[0] = this.game.DIM_X - this.width;
-    //   }
-    // } else if (window.leftPressed) {
-    //   this.pos[0] -= this.dx;
-    //   if (this.pos[0] < 0) {
-    //     this.pos[0] = 0;
-    //   }
-    // }
-
-    // if (window.upPressed) {
-    //   this.pos[1] += this.dy;
-    //   if (this.pos[1] + this.dy < 0) {
-    //     this.pos[1] = 0;
-    //   }
-    // } else if (window.downPressed) {
-    //   this.pos[1] -= this.dy;
-    //   if (this.pos[1] - this.dy + this.height > this.game.DIM_Y) {
-    //     this.pos[1] = this.game.DIM_Y - this.height;
-    //   }
-    // }
-
-    // if (window.upPressed && !window.rightPressed) {
-    //   window.frames += 1;
-    // } else if (window.downPressed && !window.leftPressed) {
-    //   window.frames += 1;
-    // } else if (window.upPressed && window.rightPressed) {
-    //   window.frames += 1;
-    // } else if (window.downPressed && window.leftPressed) {
-    //   window.frames += 1;
-    // } else if (!window.upPressed && window.rightPressed) {
-    //   window.frames += 1;
-    // } else if (!window.downPressed && window.leftPressed) {
-    //   window.frames += 1;
-    // }
-
     this.frames += 1;
     
+    // moves from the farmer walk sprite sheet over time
     if (this.frames % 10 === 0) {
       this.sx += 27;
     }
     
+    // loop back to beginning of the sheet once we get to the last frame
     if (this.sx > 189) {
       this.sx = 0;
       this.frames = 0;
     }
-    // switch (window.frames) {
-    //   case 0:
-    //     this.sx = 0;
-    //     break;
-    //   case 8:
-    //     this.sx = 27;
-    //     break;
-    //   case 16:
-    //     this.sx = 54;
-    //     break;
-    //   case 24:
-    //     this.sx = 81;
-    //     break;
-    //   case 32:
-    //     this.sx = 108;
-    //     break;
-    //   case 40:
-    //     this.sx = 135;
-    //     break;
-    //   case 48:
-    //     this.sx = 162;
-    //     break;
-    //   case 56:
-    //     this.sx = 189;
-    //     break;
-    //   default:
-    //     break;
-    // }
-
+    
     ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
   };
 };
