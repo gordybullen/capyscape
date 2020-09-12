@@ -46,7 +46,13 @@ class MovingObject {
 
   isCollidedWith(otherObject) {
     const centerDist = Util.dist(this.pos, otherObject.pos);
-    return centerDist < (this.sw + otherObject.sw);
+    // console.log(centerDist < (this.width + otherObject.width));
+    // console.log("centerDist", centerDist);
+    // console.log("this.width:", this.width);
+    // console.log("otherObject.width:", otherObject.width);
+    // console.log("this.pos:", this.pos);
+    // console.log("otherObject.pos:", otherObject.pos);
+    return centerDist < (this.width + otherObject.width);
   }
 
   collideWith(otherObject) {

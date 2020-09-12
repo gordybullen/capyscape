@@ -4,7 +4,7 @@ export default class Bush {
     this.sy = 0;
     this.sw = 32;
     this.sh = 112;
-    this.scale = 1.5;
+    this.scale = 1.25;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;

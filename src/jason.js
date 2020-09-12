@@ -14,22 +14,35 @@ class Jason extends MovingObject {
     this.height = this.sh * this.scale;
     this.image = new Image;
     this.image.src = './capy_walk_left.png';
-    // this.rightPressed = false;
-    // this.leftPressed = false;
-    // this.upPressed = false;
-    // this.downPressed = false;
   };
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width) {
-      this.pos[0] += this.dx;
-    } else if (this.pos[0] > stationaryObj.pos[0] - this.width) {
-      this.pos[0] -= this.dx;
-    } else if (this.pos[1] + this.height > stationaryObj.pos[1]) {
-      this.pos[1] -= this.dx;
-    } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
-      this.pos[1] += this.dx;  
-    }  
+    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
+      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+        if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
+          this.pos[0] += this.dx;
+        }
+        if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
+          this.pos[0] -= this.dx;
+        } 
+        // else if (this.pos[1] > stationaryObj.pos[1] + stationaryObj.height / 2) {
+        //   this.pos[1] -= this.dy;
+        // } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height / 2) {
+        //   this.pos[1] += this.dy;
+        // }
+    }
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width ) {
+    //   this.pos[0] += this.dx;
+    // }
+    // if (this.pos[0] > stationaryObj.pos[0] - this.width) {
+    //   this.pos[0] -= this.dx;
+    // }
+    // if (this.pos[1] + this.height > stationaryObj.pos[1]) {
+    //   this.pos[1] -= this.dx;
+    // }
+    // if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
+    //   this.pos[1] += this.dx;  
+    // }  
   }
   
   draw(ctx) {

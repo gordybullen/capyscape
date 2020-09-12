@@ -9,35 +9,21 @@ class Game {
     this.DIM_X = 1200;
     this.DIM_Y = 700;
     this.BG_COLOR = 'green';
+    this.NUM_FARMERS = 1;
+    this.NUM_BUSHES = 2;
     this.jason = new Jason({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmer = new Farmer({ pos: [500, 300], game: this });
     this.farmer2 = new Farmer({ pos: [500, 300], game: this });
     this.forest = new Forest({ pos: [0, this.DIM_Y / 4], game: this });
     this.bush1 = new Bush({ pos: [this.DIM_X / 1.5, 0 + 100], game: this });
     this.bush2 = new Bush({ pos: [this.DIM_X / 1.5, (this.DIM_Y / 2) + 100], game: this });
-    // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
-    // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
   }
 
-  // add(object) {
-  //   if (object instanceof Asteroid) {
-  //     this.asteroids.push(object);
-  //   } else if (object instanceof Bullet) {
-  //     this.bullets.push(object);
-  //   } else if (object instanceof Ship) {
-  //     this.ships.push(object);
-  //   } else {
-  //     throw new Error("unknown type of object");
-  //   }
-  // }
-
   allObjects() {
-    // return [].concat(this.jason, this.farmer);
     return [].concat(this.farmer, this.jason, this.farmer2, this.forest, this.bush1, this.bush2);
   }
 
   allMovingObjects() {
-    // return [].concat(this.jason, this.farmer);
     return [].concat(this.farmer, this.jason, this.farmer2);
   }
 
@@ -99,7 +85,7 @@ class Game {
   checkFarmerCollisions() {
     const allFarmers = this.allFarmers();
 
-    for (let i = 0; i < allFarmers.length - 1; i++) {
+    for (let i = 0; i < allFarmers.length; i++) {
       for (let j = 0; j < allFarmers.length; j++) {
         const obj1 = allFarmers[i];
         const obj2 = allFarmers[j];
@@ -136,11 +122,22 @@ class Game {
     }
   }
 
+  checkFarmerStationaryObjectCollisions() {
+    for (let i = 0; i < this.allStationaryObjects().length; i++) {
+      for (let j = 0; j < this.allFarmers().length; j++) {
+        const stationaryObj = this.allStationaryObjects()[i];
+        const collided = this.allFarmers()[j].isCollidedWith(stationaryObj);
+        if (collided) this.allFarmers()[j].collideWithStationaryObject(stationaryObj);
+      }
+    }
+  }
+
   step(timeDelta) {
     this.moveObjects(timeDelta);
     this.checkFarmerCollisions();
-    this.checkMovingObjectCollisions();
+    // this.checkMovingObjectCollisions();
     this.checkJasonStationaryObjectCollisions();
+    this.checkFarmerStationaryObjectCollisions();
   }
 
   // remove(object) {

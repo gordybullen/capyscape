@@ -102,7 +102,7 @@ class Bush {
     this.sy = 0;
     this.sw = 32;
     this.sh = 112;
-    this.scale = 1.5;
+    this.scale = 1.25;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;
@@ -135,6 +135,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _moving_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./moving_object */ "./src/moving_object.js");
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util */ "./src/util.js");
 /* harmony import */ var _jason__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./jason */ "./src/jason.js");
+/* harmony import */ var _bush__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./bush */ "./src/bush.js");
+
 
 
 
@@ -201,15 +203,23 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   collideWith(otherObject) {
-    if (otherObject instanceof Farmer) {
+    if (otherObject instanceof Farmer && this.frames % 300 === 0) {
       this.vel[0] = -this.vel[0];
       // otherObject.vel[0] = -this.vel[0];
       // otherObject.vel[0] = -otherObject.vel[0];
     } else if (otherObject instanceof _jason__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-      alert("Game over")
+      // alert("Game over")
+    } else if (otherObject instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"]) {
+      this.vel[0] = -this.vel[0];
     }
   }
 
+  collideWithStationaryObject(stationaryObj) {
+    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] && 
+      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+          this.vel[0] = -this.vel[0];
+    }
+  }
 
   draw(ctx) {
     this.frames += 1;
@@ -295,35 +305,21 @@ class Game {
     this.DIM_X = 1200;
     this.DIM_Y = 700;
     this.BG_COLOR = 'green';
+    this.NUM_FARMERS = 1;
+    this.NUM_BUSHES = 2;
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmer = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this });
     this.farmer2 = new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this });
     this.forest = new _forest__WEBPACK_IMPORTED_MODULE_3__["default"]({ pos: [0, this.DIM_Y / 4], game: this });
     this.bush1 = new _bush__WEBPACK_IMPORTED_MODULE_4__["default"]({ pos: [this.DIM_X / 1.5, 0 + 100], game: this });
     this.bush2 = new _bush__WEBPACK_IMPORTED_MODULE_4__["default"]({ pos: [this.DIM_X / 1.5, (this.DIM_Y / 2) + 100], game: this });
-    // this.jason = new Jason({ pos: [(this.DIM_X / 2) - 28, (this.DIM_Y / 2) - 21], game: this });
-    // this.farmer = new Farmer({ pos: [(this.DIM_X / 2) - 27, (this.DIM_Y / 2) - 33], game: this });
   }
 
-  // add(object) {
-  //   if (object instanceof Asteroid) {
-  //     this.asteroids.push(object);
-  //   } else if (object instanceof Bullet) {
-  //     this.bullets.push(object);
-  //   } else if (object instanceof Ship) {
-  //     this.ships.push(object);
-  //   } else {
-  //     throw new Error("unknown type of object");
-  //   }
-  // }
-
   allObjects() {
-    // return [].concat(this.jason, this.farmer);
     return [].concat(this.farmer, this.jason, this.farmer2, this.forest, this.bush1, this.bush2);
   }
 
   allMovingObjects() {
-    // return [].concat(this.jason, this.farmer);
     return [].concat(this.farmer, this.jason, this.farmer2);
   }
 
@@ -385,7 +381,7 @@ class Game {
   checkFarmerCollisions() {
     const allFarmers = this.allFarmers();
 
-    for (let i = 0; i < allFarmers.length - 1; i++) {
+    for (let i = 0; i < allFarmers.length; i++) {
       for (let j = 0; j < allFarmers.length; j++) {
         const obj1 = allFarmers[i];
         const obj2 = allFarmers[j];
@@ -422,11 +418,22 @@ class Game {
     }
   }
 
+  checkFarmerStationaryObjectCollisions() {
+    for (let i = 0; i < this.allStationaryObjects().length; i++) {
+      for (let j = 0; j < this.allFarmers().length; j++) {
+        const stationaryObj = this.allStationaryObjects()[i];
+        const collided = this.allFarmers()[j].isCollidedWith(stationaryObj);
+        if (collided) this.allFarmers()[j].collideWithStationaryObject(stationaryObj);
+      }
+    }
+  }
+
   step(timeDelta) {
     this.moveObjects(timeDelta);
     this.checkFarmerCollisions();
-    this.checkMovingObjectCollisions();
+    // this.checkMovingObjectCollisions();
     this.checkJasonStationaryObjectCollisions();
+    this.checkFarmerStationaryObjectCollisions();
   }
 
   // remove(object) {
@@ -568,22 +575,35 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.height = this.sh * this.scale;
     this.image = new Image;
     this.image.src = './capy_walk_left.png';
-    // this.rightPressed = false;
-    // this.leftPressed = false;
-    // this.upPressed = false;
-    // this.downPressed = false;
   };
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width) {
-      this.pos[0] += this.dx;
-    } else if (this.pos[0] > stationaryObj.pos[0] - this.width) {
-      this.pos[0] -= this.dx;
-    } else if (this.pos[1] + this.height > stationaryObj.pos[1]) {
-      this.pos[1] -= this.dx;
-    } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
-      this.pos[1] += this.dx;  
-    }  
+    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
+      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+        if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
+          this.pos[0] += this.dx;
+        }
+        if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
+          this.pos[0] -= this.dx;
+        } 
+        // else if (this.pos[1] > stationaryObj.pos[1] + stationaryObj.height / 2) {
+        //   this.pos[1] -= this.dy;
+        // } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height / 2) {
+        //   this.pos[1] += this.dy;
+        // }
+    }
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width ) {
+    //   this.pos[0] += this.dx;
+    // }
+    // if (this.pos[0] > stationaryObj.pos[0] - this.width) {
+    //   this.pos[0] -= this.dx;
+    // }
+    // if (this.pos[1] + this.height > stationaryObj.pos[1]) {
+    //   this.pos[1] -= this.dx;
+    // }
+    // if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
+    //   this.pos[1] += this.dx;  
+    // }  
   }
   
   draw(ctx) {
@@ -731,7 +751,13 @@ class MovingObject {
 
   isCollidedWith(otherObject) {
     const centerDist = _util__WEBPACK_IMPORTED_MODULE_0__["default"].dist(this.pos, otherObject.pos);
-    return centerDist < (this.sw + otherObject.sw);
+    // console.log(centerDist < (this.width + otherObject.width));
+    // console.log("centerDist", centerDist);
+    // console.log("this.width:", this.width);
+    // console.log("otherObject.width:", otherObject.width);
+    // console.log("this.pos:", this.pos);
+    // console.log("otherObject.pos:", otherObject.pos);
+    return centerDist < (this.width + otherObject.width);
   }
 
   collideWith(otherObject) {
@@ -753,12 +779,12 @@ class MovingObject {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 const Util = {
-  // Return a randomly oriented vector with the given length.
+  // Return a randomly oriented vector with the given length
   randomVec(length) {
     const deg = 2 * Math.PI * Math.random();
     return Util.scale([Math.sin(deg), Math.cos(deg)], length);
   },
-  // Scale the length of a vector by the given amount.
+  // Scale the length of a vector by the given amount
   scale(vec, m) {
     return [vec[0] * m, vec[1] * m];
   },
@@ -767,7 +793,7 @@ const Util = {
       Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2)
     );
   },
-  // Find the length of the vector.
+  // Find the length of the vector
   norm(vec) {
     return Util.dist([0, 0], vec);
   },

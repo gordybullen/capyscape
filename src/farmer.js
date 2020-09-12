@@ -1,6 +1,7 @@
 import MovingObject from './moving_object';
 import Util from './util';
 import Jason from './jason';
+import Bush from './bush';
 
 class Farmer extends MovingObject {
   constructor(options) {
@@ -64,15 +65,23 @@ class Farmer extends MovingObject {
   }
 
   collideWith(otherObject) {
-    if (otherObject instanceof Farmer) {
+    if (otherObject instanceof Farmer && this.frames % 300 === 0) {
       this.vel[0] = -this.vel[0];
       // otherObject.vel[0] = -this.vel[0];
       // otherObject.vel[0] = -otherObject.vel[0];
     } else if (otherObject instanceof Jason) {
-      alert("Game over")
+      // alert("Game over")
+    } else if (otherObject instanceof Bush) {
+      this.vel[0] = -this.vel[0];
     }
   }
 
+  collideWithStationaryObject(stationaryObj) {
+    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] && 
+      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+          this.vel[0] = -this.vel[0];
+    }
+  }
 
   draw(ctx) {
     this.frames += 1;
