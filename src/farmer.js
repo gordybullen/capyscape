@@ -17,10 +17,10 @@ class Farmer extends MovingObject {
     this.height = this.sh * this.scale;
     this.image = new Image;
     this.image.src = './farmer_walk_left.png';
-    this.speed = 4;
+    this.speed = 3;
     this.vel = Util.randomVec(this.speed);
-    this.radius = 20;
     this.frames = 0;
+    this.radius = 20;
   };
 
   move(timeDelta = timeDelta || 1) {
@@ -65,14 +65,12 @@ class Farmer extends MovingObject {
   }
 
   collideWith(otherObject) {
-    if (otherObject instanceof Farmer && this.frames % 300 === 0) {
+    if (otherObject instanceof Farmer && this.frames % 100 === 0) {
       this.vel[0] = -this.vel[0];
-      // otherObject.vel[0] = -this.vel[0];
-      // otherObject.vel[0] = -otherObject.vel[0];
-    } else if (otherObject instanceof Jason) {
-      // alert("Game over")
     } else if (otherObject instanceof Bush) {
       this.vel[0] = -this.vel[0];
+    } else if (otherObject instanceof Jason) {
+      // alert("Game over")
     }
   }
 

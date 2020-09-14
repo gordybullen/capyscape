@@ -14,7 +14,7 @@ class Jason extends MovingObject {
     this.height = this.sh * this.scale;
     this.image = new Image;
     this.image.src = './capy_walk_left.png';
-  };
+  }
 
   collideWithStationaryObject(stationaryObj) {
     if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
@@ -25,24 +25,7 @@ class Jason extends MovingObject {
         if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
           this.pos[0] -= this.dx;
         } 
-        // else if (this.pos[1] > stationaryObj.pos[1] + stationaryObj.height / 2) {
-        //   this.pos[1] -= this.dy;
-        // } else if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height / 2) {
-        //   this.pos[1] += this.dy;
-        // }
-    }
-    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width ) {
-    //   this.pos[0] += this.dx;
-    // }
-    // if (this.pos[0] > stationaryObj.pos[0] - this.width) {
-    //   this.pos[0] -= this.dx;
-    // }
-    // if (this.pos[1] + this.height > stationaryObj.pos[1]) {
-    //   this.pos[1] -= this.dx;
-    // }
-    // if (this.pos[1] < stationaryObj.pos[1] + stationaryObj.height) {
-    //   this.pos[1] += this.dx;  
-    // }  
+    }  
   }
   
   draw(ctx) {
@@ -56,13 +39,8 @@ class Jason extends MovingObject {
       this.image.src = './capy_walk_up.png';
     }
 
-    // switch (window.rightPressed) {
-    //   case
-    // }
-
     if (window.rightPressed) {
       this.pos[0] += this.dx;
-
       if (this.pos[0] + this.dx + this.width > this.game.DIM_X) {
         this.pos[0] = this.game.DIM_X - this.width;
       }
@@ -72,7 +50,7 @@ class Jason extends MovingObject {
         this.pos[0] = 0;
       }
     }
-
+    
     if (window.upPressed) {
       this.pos[1] += this.dy;
       if (this.pos[1] + this.dy < 0) {
