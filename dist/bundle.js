@@ -208,7 +208,7 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     } else if (otherObject instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"]) {
       this.vel[0] = -this.vel[0];
     } else if (otherObject instanceof _jason__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-      // alert("Game over")
+      
     }
   }
 
@@ -300,15 +300,17 @@ __webpack_require__.r(__webpack_exports__);
 
 const BUSH_POSITIONS = [
   [1200 / 1.5, 0 + 100],
-  [1200 / 1.5, (700 / 2) + 100]
-]
+  [1200 / 1.5, 600 / 2 + 100],
+];
 
 class Game {
   constructor() {
     this.DIM_X = 1200;
-    this.DIM_Y = 700;
-    this.BG_COLOR = 'green';
-    this.NUM_FARMERS = 0;
+    this.DIM_Y = 600;
+    this.BG_COLOR = "green";
+    this.BG_IMAGE = new Image();
+    this.BG_IMAGE.src = "crops_overhead.jpeg";
+    this.NUM_FARMERS = 3;
     this.NUM_BUSHES = 2;
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmers = [];
@@ -327,7 +329,7 @@ class Game {
     } else {
       throw new Error("unknown type of object");
     }
-  };
+  }
 
   allObjects() {
     return [].concat(this.jason, this.farmers, this.bushes, this.forest);
@@ -339,47 +341,44 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({pos: [500, 300], game: this}));
+      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this }));
     }
   }
 
   addBushes() {
     for (let i = 0; i < this.NUM_BUSHES; i++) {
-      this.add(new _bush__WEBPACK_IMPORTED_MODULE_4__["default"]({pos: BUSH_POSITIONS[i], game: this}));
+      this.add(new _bush__WEBPACK_IMPORTED_MODULE_4__["default"]({ pos: BUSH_POSITIONS[i], game: this }));
     }
   }
 
   randomPosition() {
-    return [
-      this.DIM_X * Math.random(),
-      this.DIM_Y * Math.random()
-    ];
+    return [this.DIM_X * Math.random(), this.DIM_Y * Math.random()];
   }
 
   draw(ctx) {
     ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
-    ctx.fillStyle = this.BG_COLOR;
-    ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
-    // const img = new Image;
-    // img.src = '../mini_capy.png';
-    // ctx.drawImage(img, 0, 0, this.DIM_X, this.DIM_Y)
+    // ctx.fillStyle = this.BG_COLOR;
+    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y)
+    // ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
 
-    this.allObjects().forEach(object => object.draw(ctx));
+    this.allObjects().forEach((object) => object.draw(ctx));
   }
 
   moveObjects(timeDelta) {
-    this.allMovingObjects().forEach(object => object.move(timeDelta));
+    this.allMovingObjects().forEach((object) => object.move(timeDelta));
   }
 
   wrap(pos) {
-    return [
-      _util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[0], this.DIM_X), _util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[1], this.DIM_Y)
-    ];
+    return [_util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[0], this.DIM_X), _util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[1], this.DIM_Y)];
   }
 
   isOutOfBounds(object) {
-    return (object.pos[0] < 0 + object.sw) || (object.pos[1] < 0 + object.sh) ||
-      (object.pos[0] > this.DIM_X - object.sw * 3) || (object.pos[1] > this.DIM_Y - object.sh * 3);
+    return (
+      object.pos[0] < 0 + object.sw ||
+      object.pos[1] < 0 + object.sh ||
+      object.pos[0] > this.DIM_X - object.sw * 3 ||
+      object.pos[1] > this.DIM_Y - object.sh * 3
+    );
   }
 
   checkFarmerCollisions() {
@@ -425,7 +424,8 @@ class Game {
       for (let j = 0; j < this.NUM_FARMERS; j++) {
         const stationaryObj = this.bushes[i];
         const collided = this.farmers[j].isCollidedWith(stationaryObj);
-        if (collided) this.farmers[j].collideWithStationaryObject(stationaryObj);
+        if (collided)
+          this.farmers[j].collideWithStationaryObject(stationaryObj);
       }
     }
   }
@@ -449,6 +449,7 @@ class Game {
 
 /* harmony default export */ __webpack_exports__["default"] = (Game);
 
+
 /***/ }),
 
 /***/ "./src/game_view.js":
@@ -466,18 +467,23 @@ __webpack_require__.r(__webpack_exports__);
 class GameView {
   constructor(ctx) {
     this.ctx = ctx;
-    this.game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"];
+    // this.game = new Game();
     this.lastTime = 0;
-  };
+    this.gameMenu = document.getElementById("start-menu");
+    this.startButton = document.querySelector(".start-button");
+    // this.menuTitle = document.querySelector(".menu-title");
+    // this.menuText = document.querySelector(".menu-text");
+    this.inProgress = false;
+
+    this.bindMenuHandlers();
+  }
 
   start() {
-    // start the animation
-    // setInterval(() => {
-    //   this.game.farmer.frames += 1;
-    // }, 0.5)
-    
+    this.game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](this.ctx);
+    this.inProgress = true;
+
     requestAnimationFrame(this.animate.bind(this));
-  };
+  }
 
   animate(time) {
     const timeDelta = time - this.lastTime;
@@ -488,10 +494,26 @@ class GameView {
 
     // every call to animate requests causes another call to animate
     requestAnimationFrame(this.animate.bind(this));
-  };
-};
+  }
+
+  bindMenuHandlers() {
+    const startGame = () => {
+      this.gameMenu.classList.toggle("hide");
+      this.start();
+    };
+
+    this.startButton.addEventListener("click", () => {
+      if (!this.inProgress) startGame();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.keyCode === 13 && !this.inProgress) startGame();
+    });
+  }
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (GameView);
+
 
 /***/ }),
 
@@ -513,12 +535,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = 1200;
-  canvas.height = 700;
+  canvas.height = 600;
   window.MovingObject = _moving_object__WEBPACK_IMPORTED_MODULE_1__["default"];
   window.ctx = ctx;
   window.frames = 0;
   const gameView = new _game_view__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
-  gameView.start();
+  // gameView.start();
 });
 
 

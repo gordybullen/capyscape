@@ -1,20 +1,22 @@
-import Util from './util';
-import Jason from './jason';
-import Farmer from './farmer';
-import Forest from './forest';
-import Bush from './bush';
+import Util from "./util";
+import Jason from "./jason";
+import Farmer from "./farmer";
+import Forest from "./forest";
+import Bush from "./bush";
 
 const BUSH_POSITIONS = [
   [1200 / 1.5, 0 + 100],
-  [1200 / 1.5, (700 / 2) + 100]
-]
+  [1200 / 1.5, 600 / 2 + 100],
+];
 
 class Game {
   constructor() {
     this.DIM_X = 1200;
-    this.DIM_Y = 700;
-    this.BG_COLOR = 'green';
-    this.NUM_FARMERS = 0;
+    this.DIM_Y = 600;
+    this.BG_COLOR = "green";
+    this.BG_IMAGE = new Image();
+    this.BG_IMAGE.src = "crops_overhead.jpeg";
+    this.NUM_FARMERS = 3;
     this.NUM_BUSHES = 2;
     this.jason = new Jason({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmers = [];
@@ -33,7 +35,7 @@ class Game {
     } else {
       throw new Error("unknown type of object");
     }
-  };
+  }
 
   allObjects() {
     return [].concat(this.jason, this.farmers, this.bushes, this.forest);
@@ -45,47 +47,44 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new Farmer({pos: [500, 300], game: this}));
+      this.add(new Farmer({ pos: [500, 300], game: this }));
     }
   }
 
   addBushes() {
     for (let i = 0; i < this.NUM_BUSHES; i++) {
-      this.add(new Bush({pos: BUSH_POSITIONS[i], game: this}));
+      this.add(new Bush({ pos: BUSH_POSITIONS[i], game: this }));
     }
   }
 
   randomPosition() {
-    return [
-      this.DIM_X * Math.random(),
-      this.DIM_Y * Math.random()
-    ];
+    return [this.DIM_X * Math.random(), this.DIM_Y * Math.random()];
   }
 
   draw(ctx) {
     ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
-    ctx.fillStyle = this.BG_COLOR;
-    ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
-    // const img = new Image;
-    // img.src = '../mini_capy.png';
-    // ctx.drawImage(img, 0, 0, this.DIM_X, this.DIM_Y)
+    // ctx.fillStyle = this.BG_COLOR;
+    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y)
+    // ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
 
-    this.allObjects().forEach(object => object.draw(ctx));
+    this.allObjects().forEach((object) => object.draw(ctx));
   }
 
   moveObjects(timeDelta) {
-    this.allMovingObjects().forEach(object => object.move(timeDelta));
+    this.allMovingObjects().forEach((object) => object.move(timeDelta));
   }
 
   wrap(pos) {
-    return [
-      Util.wrap(pos[0], this.DIM_X), Util.wrap(pos[1], this.DIM_Y)
-    ];
+    return [Util.wrap(pos[0], this.DIM_X), Util.wrap(pos[1], this.DIM_Y)];
   }
 
   isOutOfBounds(object) {
-    return (object.pos[0] < 0 + object.sw) || (object.pos[1] < 0 + object.sh) ||
-      (object.pos[0] > this.DIM_X - object.sw * 3) || (object.pos[1] > this.DIM_Y - object.sh * 3);
+    return (
+      object.pos[0] < 0 + object.sw ||
+      object.pos[1] < 0 + object.sh ||
+      object.pos[0] > this.DIM_X - object.sw * 3 ||
+      object.pos[1] > this.DIM_Y - object.sh * 3
+    );
   }
 
   checkFarmerCollisions() {
@@ -131,7 +130,8 @@ class Game {
       for (let j = 0; j < this.NUM_FARMERS; j++) {
         const stationaryObj = this.bushes[i];
         const collided = this.farmers[j].isCollidedWith(stationaryObj);
-        if (collided) this.farmers[j].collideWithStationaryObject(stationaryObj);
+        if (collided)
+          this.farmers[j].collideWithStationaryObject(stationaryObj);
       }
     }
   }

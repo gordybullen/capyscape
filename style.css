@@ -1,9 +1,133 @@
 body {
   margin: 0;
+  background-color: rgb(170, 170, 170);
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #canvas {
-  display: block;
-  margin: 0 auto;
-  border: 1px solid black;
+  position: absolute;
+  left: 50%;
+  margin-left: -602px;
+  border: 2px solid purple;
+  border-radius: 8px;
 }
+
+.jason-image {
+  background-image: url("./capy_run.png");
+  background-repeat: no-repeat;
+  background-size: 54px 66px;
+  height: 66px;
+  width: 54px;
+}
+
+.farmer-image {
+  background-image: url("./farmer_image.png");
+  background-repeat: no-repeat;
+  background-size: 54px 66px;
+  height: 66px;
+  width: 54px;
+}
+
+.game-view-container {
+  position: relative;
+}
+
+.game-menu {
+  position: absolute;
+  left: 50%;
+  margin-left: -602px;
+  z-index: 0;
+  height: 600px;
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: rgb(96, 165, 53);
+  transition: opacity 1.5s;
+  border: 2px solid brown;
+  border-radius: 8px;
+  box-sizing: content-box;
+}
+
+.game-menu.hide {
+  opacity: 0;
+}
+
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 300px;
+  width: 700px;
+  width: 100%;
+  /* margin-top: 80px; */
+}
+
+.menu-title {
+  width: 100%;
+}
+
+.menu-content > h2 {
+  /* width: 100%; */
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  text-shadow: -1px -1px 0 rgb(90, 90, 90), 1px -1px 0 rgb(90, 90, 90),
+    -1px 1px 0 rgb(90, 90, 90), 1px 1px 0 rgb(90, 90, 90);
+  text-align: center;
+  font-size: 60px;
+  color: pink;
+}
+
+.menu-content > p {
+  color: black;
+  font-size: 30px;
+  text-align: center;
+  margin: 20px;
+  line-height: 1.25;
+  text-shadow: 1px 1px 1px rgb(90, 90, 90);
+  width: 50%;
+  margin-bottom: 60px;
+}
+
+.start-button {
+  background-color: yellow;
+  padding: 15px 40px;
+  border-radius: 8px;
+  margin: 15px;
+  color: black;
+  font-size: 24px;
+}
+
+.start-button:hover {
+  cursor: pointer;
+}
+
+/* .personal-links {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  bottom: 20px;
+  right: 20px;
+}
+
+.personal-links svg {
+  font-size: 45px;
+  margin: 10px 10px;
+  color: white;
+} */

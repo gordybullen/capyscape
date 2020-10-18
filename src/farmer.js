@@ -70,7 +70,7 @@ class Farmer extends MovingObject {
     } else if (otherObject instanceof Bush) {
       this.vel[0] = -this.vel[0];
     } else if (otherObject instanceof Jason) {
-      // alert("Game over")
+      
     }
   }
 
