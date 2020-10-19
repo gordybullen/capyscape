@@ -22,6 +22,9 @@ class Game {
     this.farmers = [];
     this.bushes = [];
     this.forest = new Forest({ pos: [0, this.DIM_Y / 4], game: this });
+    this.lives = 3;
+    this.reset = false;
+    this.gameOver = false;
 
     this.addFarmers();
     this.addBushes();
@@ -42,12 +45,16 @@ class Game {
   }
 
   allMovingObjects() {
+    return [].concat(this.farmers, this.jason);
+  }
+
+  automatedObjects() {
     return [].concat(this.farmers);
   }
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new Farmer({ pos: [500, 300], game: this }));
+      this.add(new Farmer({ pos: [200, 350], game: this }));
     }
   }
 
@@ -64,14 +71,14 @@ class Game {
   draw(ctx) {
     ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
     // ctx.fillStyle = this.BG_COLOR;
-    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y)
+    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y);
     // ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
 
     this.allObjects().forEach((object) => object.draw(ctx));
   }
 
   moveObjects(timeDelta) {
-    this.allMovingObjects().forEach((object) => object.move(timeDelta));
+    this.automatedObjects().forEach((object) => object.move(timeDelta));
   }
 
   wrap(pos) {
@@ -141,7 +148,7 @@ class Game {
     this.checkFarmerCollisions();
     this.checkJasonStationaryObjectCollisions();
     this.checkFarmerStationaryObjectCollisions();
-    // this.checkMovingObjectCollisions();
+    this.checkMovingObjectCollisions();
   }
 
   // remove(object) {

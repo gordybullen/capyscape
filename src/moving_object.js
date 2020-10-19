@@ -1,4 +1,4 @@
-import Util from './util';
+import Util from "./util";
 
 class MovingObject {
   constructor(options) {
@@ -45,19 +45,25 @@ class MovingObject {
   // }
 
   isCollidedWith(otherObject) {
-    const centerDist = Util.dist(this.pos, otherObject.pos);
+    const obj1CenterPos = [
+      this.pos[0] + this.width / 2,
+      this.pos[1] + this.height / 2,
+    ];
+    const obj2CenterPos = [
+      otherObject.pos[0] + otherObject.width / 2,
+      otherObject.pos[1] + otherObject.height / 2,
+    ];
+    const centerDist = Util.dist(obj1CenterPos, obj2CenterPos);
     // console.log(centerDist < (this.width + otherObject.width));
     // console.log("centerDist", centerDist);
     // console.log("this.width:", this.width);
     // console.log("otherObject.width:", otherObject.width);
     // console.log("this.pos:", this.pos);
     // console.log("otherObject.pos:", otherObject.pos);
-    return centerDist < (this.width + otherObject.width);
+    return centerDist < (this.width / 2) + (otherObject.width / 2);
   }
 
-  collideWith(otherObject) {
-    
-  }
-};
+  collideWith(otherObject) {}
+}
 
 export default MovingObject;

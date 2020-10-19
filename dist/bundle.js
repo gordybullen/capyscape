@@ -203,20 +203,27 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   collideWith(otherObject) {
-    if (otherObject instanceof Farmer && this.frames % 100 === 0) {
+    if (otherObject instanceof Farmer && this.frames % 250 === 0) {
       this.vel[0] = -this.vel[0];
     } else if (otherObject instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"]) {
       this.vel[0] = -this.vel[0];
     } else if (otherObject instanceof _jason__WEBPACK_IMPORTED_MODULE_2__["default"]) {
-      
+      this.game.lives -= 1;
+      this.game.reset = true;
+      if (this.game.lives === 0) {
+        this.game.gameOver = true;
+      }
     }
   }
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] && 
-      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
-          this.vel[0] = -this.vel[0];
+    if (this.isCollidedWith(stationaryObj)) {
+      this.vel[0] = -this.vel[0];
     }
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] && 
+    //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+    //       this.vel[0] = -this.vel[0];
+    // }
   }
 
   draw(ctx) {
@@ -316,6 +323,9 @@ class Game {
     this.farmers = [];
     this.bushes = [];
     this.forest = new _forest__WEBPACK_IMPORTED_MODULE_3__["default"]({ pos: [0, this.DIM_Y / 4], game: this });
+    this.lives = 3;
+    this.reset = false;
+    this.gameOver = false;
 
     this.addFarmers();
     this.addBushes();
@@ -336,12 +346,16 @@ class Game {
   }
 
   allMovingObjects() {
+    return [].concat(this.farmers, this.jason);
+  }
+
+  automatedObjects() {
     return [].concat(this.farmers);
   }
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 300], game: this }));
+      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [200, 350], game: this }));
     }
   }
 
@@ -358,14 +372,14 @@ class Game {
   draw(ctx) {
     ctx.clearRect(0, 0, this.DIM_X, this.DIM_Y);
     // ctx.fillStyle = this.BG_COLOR;
-    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y)
+    ctx.drawImage(this.BG_IMAGE, 0, 0, this.DIM_X, this.DIM_Y);
     // ctx.fillRect(0, 0, this.DIM_X, this.DIM_Y);
 
     this.allObjects().forEach((object) => object.draw(ctx));
   }
 
   moveObjects(timeDelta) {
-    this.allMovingObjects().forEach((object) => object.move(timeDelta));
+    this.automatedObjects().forEach((object) => object.move(timeDelta));
   }
 
   wrap(pos) {
@@ -435,7 +449,7 @@ class Game {
     this.checkFarmerCollisions();
     this.checkJasonStationaryObjectCollisions();
     this.checkFarmerStationaryObjectCollisions();
-    // this.checkMovingObjectCollisions();
+    this.checkMovingObjectCollisions();
   }
 
   // remove(object) {
@@ -462,6 +476,8 @@ class Game {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
+/* harmony import */ var _jason__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./jason */ "./src/jason.js");
+
 
 
 class GameView {
@@ -474,6 +490,8 @@ class GameView {
     // this.menuTitle = document.querySelector(".menu-title");
     // this.menuText = document.querySelector(".menu-text");
     this.inProgress = false;
+    this.lives = document.querySelector(".lives");
+    this.round = 1;
 
     this.bindMenuHandlers();
   }
@@ -488,12 +506,53 @@ class GameView {
   animate(time) {
     const timeDelta = time - this.lastTime;
 
+    this.lives.innerHTML = `Lives: ${this.game.lives}`;
     this.game.step(timeDelta);
     this.game.draw(this.ctx);
     this.lastTime = time;
 
-    // every call to animate requests causes another call to animate
-    requestAnimationFrame(this.animate.bind(this));
+    if (this.roundOver()) {
+      this.gameMenu.classList.toggle("hide");
+      this.lives.classList.toggle("hide");
+      this.inProgress = false;
+    } else if (this.game.reset) {
+      this.game.jason.pos = [this.game.DIM_X - 84, 0];
+      this.game.reset = false;
+      requestAnimationFrame(this.animate.bind(this));
+    } else {
+      // every call to animate requests causes another call to animate
+      requestAnimationFrame(this.animate.bind(this));
+    }
+  }
+
+  roundOver() {
+    if (this.game.gameOver) {
+      cancelAnimationFrame(this.animate.bind(this));
+      this.round += 1;
+
+      // this.menuTitle.innerHTML = levels[this.round].menuTitle;
+      // this.menuText.innerHTML = levels[this.round].menuText;
+
+      // if (this.round < 5) {
+      //   this.startButton.innerHTML = "Start";
+      // } else {
+      //   this.startButton.innerHTML = "Play Again";
+      //   this.round = 1;
+      // }
+
+      return true;
+      // } else if (this.game.lost()) {
+      //   window.cancelAnimationFrame(this.animationRequestId);
+      //   this.menuTitle.innerHTML = "Not Quite!";
+      //   this.menuText.innerHTML =
+      //     "";
+      //   this.startButton.innerHTML = "Play Again";
+
+      //   this.round = 1;
+      //   return true;
+    }
+
+    return false;
   }
 
   bindMenuHandlers() {
@@ -597,31 +656,48 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.scale = 3;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
-    this.image = new Image;
-    this.image.src = './capy_walk_left.png';
+    this.image = new Image();
+    this.image.src = "./capy_walk_left.png";
   }
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
-      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
-        if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
-          this.pos[0] += this.dx;
-        }
-        if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
-          this.pos[0] -= this.dx;
-        } 
-    }  
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
+    //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+    //     if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
+    //       this.pos[0] += this.dx;
+    //     }
+    //     if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
+    //       this.pos[0] -= this.dx;
+    //     }
+    // }
+    if (this.isCollidedWith(stationaryObj)) {
+      debugger
+      const obj1CenterPos = [
+        this.pos[0] + this.width / 2,
+        this.pos[1] + this.height / 2,
+      ];
+      const obj2CenterPos = [
+        stationaryObj.pos[0] + stationaryObj.width / 2,
+        stationaryObj.pos[1] + stationaryObj.height / 2,
+      ];
+
+      if (obj1CenterPos[0] > obj2CenterPos[0]) {
+        this.pos[0] += this.dx;
+      } else if (obj1CenterPos[0] < obj2CenterPos[0]) {
+        this.pos[0] -= this.dx;
+      }
+    }
   }
-  
+
   draw(ctx) {
     if (window.rightPressed) {
-      this.image.src = './capy_walk_right_flipped.png';
+      this.image.src = "./capy_walk_right_flipped.png";
     } else if (window.leftPressed) {
-      this.image.src = './capy_walk_left.png';
+      this.image.src = "./capy_walk_left.png";
     } else if (window.downPressed) {
-      this.image.src = './capy_walk_down.png';
+      this.image.src = "./capy_walk_down.png";
     } else if (window.upPressed) {
-      this.image.src = './capy_walk_up.png';
+      this.image.src = "./capy_walk_up.png";
     }
 
     if (window.rightPressed) {
@@ -635,7 +711,7 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.pos[0] = 0;
       }
     }
-    
+
     if (window.upPressed) {
       this.pos[1] += this.dy;
       if (this.pos[1] + this.dy < 0) {
@@ -687,11 +763,22 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       window.frames = 0;
     }
 
-    ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.sx,
+      this.sy,
+      this.sw,
+      this.sh,
+      this.pos[0],
+      this.pos[1],
+      this.width,
+      this.height
+    );
   }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Jason);
+
 
 /***/ }),
 
@@ -752,22 +839,29 @@ class MovingObject {
   // }
 
   isCollidedWith(otherObject) {
-    const centerDist = _util__WEBPACK_IMPORTED_MODULE_0__["default"].dist(this.pos, otherObject.pos);
+    const obj1CenterPos = [
+      this.pos[0] + this.width / 2,
+      this.pos[1] + this.height / 2,
+    ];
+    const obj2CenterPos = [
+      otherObject.pos[0] + otherObject.width / 2,
+      otherObject.pos[1] + otherObject.height / 2,
+    ];
+    const centerDist = _util__WEBPACK_IMPORTED_MODULE_0__["default"].dist(obj1CenterPos, obj2CenterPos);
     // console.log(centerDist < (this.width + otherObject.width));
     // console.log("centerDist", centerDist);
     // console.log("this.width:", this.width);
     // console.log("otherObject.width:", otherObject.width);
     // console.log("this.pos:", this.pos);
     // console.log("otherObject.pos:", otherObject.pos);
-    return centerDist < (this.width + otherObject.width);
+    return centerDist < (this.width / 2) + (otherObject.width / 2);
   }
 
-  collideWith(otherObject) {
-    
-  }
-};
+  collideWith(otherObject) {}
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (MovingObject);
+
 
 /***/ }),
 

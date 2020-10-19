@@ -9,6 +9,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 400px;
 }
 
 main {
@@ -59,14 +60,23 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background-color: rgb(96, 165, 53);
+  background-color: darkgreen;
   transition: opacity 1.5s;
   border: 2px solid brown;
   border-radius: 8px;
   box-sizing: content-box;
 }
 
-.game-menu.hide {
+.lives {
+  color: black;
+  height: 30px;
+  width: 200px;
+  color: black;
+  margin-left: 200px;
+  font-size: 30px;
+}
+
+.game-menu.hide, .lives.hide {
   opacity: 0;
 }
 

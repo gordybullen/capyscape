@@ -1,4 +1,4 @@
-import MovingObject from './moving_object';
+import MovingObject from "./moving_object";
 
 class Jason extends MovingObject {
   constructor(options) {
@@ -12,31 +12,48 @@ class Jason extends MovingObject {
     this.scale = 3;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
-    this.image = new Image;
-    this.image.src = './capy_walk_left.png';
+    this.image = new Image();
+    this.image.src = "./capy_walk_left.png";
   }
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
-      this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
-        if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
-          this.pos[0] += this.dx;
-        }
-        if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
-          this.pos[0] -= this.dx;
-        } 
-    }  
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
+    //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
+    //     if (this.pos[0] > stationaryObj.pos[0] + stationaryObj.width / 2) {
+    //       this.pos[0] += this.dx;
+    //     }
+    //     if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width / 2) {
+    //       this.pos[0] -= this.dx;
+    //     }
+    // }
+    if (this.isCollidedWith(stationaryObj)) {
+      debugger
+      const obj1CenterPos = [
+        this.pos[0] + this.width / 2,
+        this.pos[1] + this.height / 2,
+      ];
+      const obj2CenterPos = [
+        stationaryObj.pos[0] + stationaryObj.width / 2,
+        stationaryObj.pos[1] + stationaryObj.height / 2,
+      ];
+
+      if (obj1CenterPos[0] > obj2CenterPos[0]) {
+        this.pos[0] += this.dx;
+      } else if (obj1CenterPos[0] < obj2CenterPos[0]) {
+        this.pos[0] -= this.dx;
+      }
+    }
   }
-  
+
   draw(ctx) {
     if (window.rightPressed) {
-      this.image.src = './capy_walk_right_flipped.png';
+      this.image.src = "./capy_walk_right_flipped.png";
     } else if (window.leftPressed) {
-      this.image.src = './capy_walk_left.png';
+      this.image.src = "./capy_walk_left.png";
     } else if (window.downPressed) {
-      this.image.src = './capy_walk_down.png';
+      this.image.src = "./capy_walk_down.png";
     } else if (window.upPressed) {
-      this.image.src = './capy_walk_up.png';
+      this.image.src = "./capy_walk_up.png";
     }
 
     if (window.rightPressed) {
@@ -50,7 +67,7 @@ class Jason extends MovingObject {
         this.pos[0] = 0;
       }
     }
-    
+
     if (window.upPressed) {
       this.pos[1] += this.dy;
       if (this.pos[1] + this.dy < 0) {
@@ -102,7 +119,17 @@ class Jason extends MovingObject {
       window.frames = 0;
     }
 
-    ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.sx,
+      this.sy,
+      this.sw,
+      this.sh,
+      this.pos[0],
+      this.pos[1],
+      this.width,
+      this.height
+    );
   }
 }
 
