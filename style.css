@@ -122,6 +122,7 @@ main {
   margin: 15px;
   color: black;
   font-size: 24px;
+  /* cursor: hover; */
 }
 
 .start-button:hover {

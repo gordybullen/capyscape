@@ -102,7 +102,7 @@ class Bush {
     this.sy = 0;
     this.sw = 32;
     this.sh = 112;
-    this.scale = 1.25;
+    this.scale = 1.5;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
     this.image = new Image;
@@ -306,8 +306,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const BUSH_POSITIONS = [
-  [1200 / 1.5, 0 + 100],
-  [1200 / 1.5, 600 / 2 + 100],
+  [1200 / 1.5, 0 + 75],
+  [1200 / 1.5, 600 / 2 + 50],
 ];
 
 class Game {
@@ -317,7 +317,7 @@ class Game {
     this.BG_COLOR = "green";
     this.BG_IMAGE = new Image();
     this.BG_IMAGE.src = "crops_overhead.jpeg";
-    this.NUM_FARMERS = 3;
+    this.NUM_FARMERS = 8;
     this.NUM_BUSHES = 2;
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmers = [];
@@ -355,7 +355,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [200, 350], game: this }));
+      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [400, 200], game: this }));
     }
   }
 

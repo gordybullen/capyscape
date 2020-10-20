@@ -5,8 +5,8 @@ import Forest from "./forest";
 import Bush from "./bush";
 
 const BUSH_POSITIONS = [
-  [1200 / 1.5, 0 + 100],
-  [1200 / 1.5, 600 / 2 + 100],
+  [1200 / 1.5, 0 + 75],
+  [1200 / 1.5, 600 / 2 + 50],
 ];
 
 class Game {
@@ -16,7 +16,7 @@ class Game {
     this.BG_COLOR = "green";
     this.BG_IMAGE = new Image();
     this.BG_IMAGE.src = "crops_overhead.jpeg";
-    this.NUM_FARMERS = 3;
+    this.NUM_FARMERS = 8;
     this.NUM_BUSHES = 2;
     this.jason = new Jason({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmers = [];
@@ -54,7 +54,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new Farmer({ pos: [200, 350], game: this }));
+      this.add(new Farmer({ pos: [400, 200], game: this }));
     }
   }
 
