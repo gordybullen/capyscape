@@ -201,8 +201,7 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.image = new Image();
     this.image.src = "./farmer_walk_left.png";
     this.speed = 2 * this.game.speedMultiplier;
-    this.vel = [1, 1]
-    // this.vel = Util.randomVec(this.speed);
+    this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].randomVec(this.speed);
     this.frames = 0;
     this.radius = 20;
   }
@@ -394,6 +393,8 @@ const BUSH_POSITIONS = [
   [200, 0 + 75],
   [200, 600 / 2 + 50],
   [200, 300 - 168 / 2],
+  [800, 0 + 75],
+  [800, 600 / 2 + 50],
 ];
 
 class Game {
@@ -459,7 +460,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [400, 200], game: this }));
+      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [400, 300], game: this }));
     }
   }
 
@@ -576,7 +577,6 @@ class Game {
   }
 
   step(timeDelta) {
-    console.log(this.farmers);
     this.moveObjects(timeDelta);
     this.checkJasonStationaryObjectCollisions();
     this.checkFarmerStationaryObjectCollisions();
@@ -654,7 +654,7 @@ class GameView {
     if (this.game.gameOver) {
       cancelAnimationFrame(this.animate.bind(this));
       this.menuTitle.innerHTML = "Try again? Jason needs you!";
-      this.menuText.innerHTML = "Hints: ...";
+      this.menuText.innerHTML = "Hints: Press the spacebar to place a corndog!";
       this.startButton.innerHTML = "Play Again";
       this.round = 1;
       return true;
@@ -670,7 +670,7 @@ class GameView {
         this.round = 1;
         cancelAnimationFrame(this.animate.bind(this));
         this.menuTitle.innerHTML = "YOU MADE IT!!!";
-        this.menuText.innerHTML = "Jason is with his fam.";
+        this.menuText.innerHTML = "Jason is reunited with his family.";
         this.startButton.innerHTML = "Play Again";
         return true;
       }
@@ -935,29 +935,29 @@ const levels = {
     numFarmers: 1,
     farmerSpeedMultiplier: 1,
     numBushes: 0,
-    corndogsAdded: 0,
+    corndogsAdded: -5,
     menuTitle:
-      "You made it out of this pasture, but the farmers are still looking for you!",
+      "",
     menuText:
-      "Hint: Farmers love corndogs. Make sure to place strategic corndogs to slow a farmer in his tracks!",
+      ""
   },
   2: {
     numFarmers: 2,
     farmerSpeedMultiplier: 1.5,
     numBushes: 2,
-    corndogsAdded: 3,
+    corndogsAdded: -3,
     menuTitle: "You made it out of this pasture, but the farmers are still looking for you!",
     menuText:
-      "Hint: Farmers love corndogs. Make sure to place strategic corndogs to slow a farmer in his tracks",
+      "Hint: Farmers love corndogs. Make sure to place strategic corndogs to slow a farmer in his tracks.",
   },
   3: {
     numFarmers: 3,
     farmerSpeedMultiplier: 1.75,
-    numBushes: 3,
-    corndogsAdded: 1,
+    numBushes: 5,
+    corndogsAdded: -1,
     menuTitle: "Watch out, Farmer Ats' is gathering his friends!",
     menuText:
-      "Hint: Try not get stuck in corner! Give yourself some escape routes.",
+      "Hint: Try not get stuck in a corner! Give yourself some escape routes.",
   },
 };
 

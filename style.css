@@ -1,37 +1,32 @@
 body {
-  margin: 0;
-  background-color: rgb(170, 170, 170);
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100vh;
+  background-color: orange;
+  /* background: linear-gradient(135deg, rgb(120, 115, 112) 0%, rgb(31, 35, 36) 100%); */
+  overflow: hidden;
 }
 
 header {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-left: 400px; */
-}
-
-h1 {
-  font-size: 40px;
-  font-family: ;
-}
-
-main {
-  width: 80%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 #canvas {
   position: absolute;
-  left: 50%;
-  margin-left: -602px;
   border: 2px solid purple;
   border-radius: 8px;
+}
+
+.title {
+  font-size: 50px;
+  font-family: "Gloria Hallelujah", cursive;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .jason-image {
@@ -50,47 +45,44 @@ main {
   width: 54px;
 }
 
-.game-view-container {
-  position: relative;
-}
-
 .game-menu {
-  position: absolute;
-  left: 50%;
-  margin-left: -602px;
+  position: relative;
   z-index: 0;
   height: 600px;
   width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   background-color: darkgreen;
   transition: opacity 1.5s;
-  border: 2px solid brown;
+  border: 2px solid green;
   border-radius: 8px;
   box-sizing: content-box;
+  font-family: "Gloria Hallelujah", cursive;
 }
 
 .game-info {
-  border: 1px solid white;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 400px;
+  width: 300px;
   height: 40px;
   position: absolute;
   margin-left: 800px;
-  padding: 10px;
+  font-family: "Gloria Hallelujah", cursive;
+  transition: opacity 1.5s;
 }
 
-.lives, .corndogs {
+.lives,
+.corndogs {
   color: black;
   font-size: 30px;
 }
 
-.game-menu.hide, .game-info.hide {
+.game-menu.hide,
+.game-info.hide {
   opacity: 0;
 }
 
@@ -98,35 +90,30 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 300px;
-  width: 700px;
+  justify-content: space-evenly;
   width: 100%;
-  /* margin-top: 80px; */
+  height: 100%;
+  font-family: "Gloria Hallelujah", cursive;
 }
 
 .menu-title {
-  width: 100%;
-}
-
-.menu-content > h2 {
-  /* width: 100%; */
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  width: 90%;
+  font-family: "Gloria Hallelujah", cursive;
   text-shadow: -1px -1px 0 rgb(90, 90, 90), 1px -1px 0 rgb(90, 90, 90),
     -1px 1px 0 rgb(90, 90, 90), 1px 1px 0 rgb(90, 90, 90);
   text-align: center;
-  font-size: 60px;
+  font-size: 50px;
   color: pink;
 }
 
-.menu-content > p {
+.menu-text {
   color: black;
-  font-size: 30px;
+  font-size: 32px;
   text-align: center;
-  margin: 20px;
   line-height: 1.25;
   text-shadow: 1px 1px 1px rgb(90, 90, 90);
-  width: 50%;
-  margin-bottom: 60px;
+  width: 60%;
+  margin: 0 !important;
 }
 
 .start-button {
@@ -136,7 +123,8 @@ main {
   margin: 15px;
   color: black;
   font-size: 24px;
-  /* cursor: hover; */
+  cursor: pointer;
+  font-family: "Gloria Hallelujah", cursive;
 }
 
 .start-button:hover {

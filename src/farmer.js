@@ -19,8 +19,7 @@ class Farmer extends MovingObject {
     this.image = new Image();
     this.image.src = "./farmer_walk_left.png";
     this.speed = 2 * this.game.speedMultiplier;
-    this.vel = [1, 1]
-    // this.vel = Util.randomVec(this.speed);
+    this.vel = Util.randomVec(this.speed);
     this.frames = 0;
     this.radius = 20;
   }

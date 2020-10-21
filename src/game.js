@@ -9,6 +9,8 @@ const BUSH_POSITIONS = [
   [200, 0 + 75],
   [200, 600 / 2 + 50],
   [200, 300 - 168 / 2],
+  [800, 0 + 75],
+  [800, 600 / 2 + 50],
 ];
 
 class Game {
@@ -74,7 +76,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new Farmer({ pos: [400, 200], game: this }));
+      this.add(new Farmer({ pos: [400, 300], game: this }));
     }
   }
 
@@ -191,7 +193,6 @@ class Game {
   }
 
   step(timeDelta) {
-    console.log(this.farmers);
     this.moveObjects(timeDelta);
     this.checkJasonStationaryObjectCollisions();
     this.checkFarmerStationaryObjectCollisions();

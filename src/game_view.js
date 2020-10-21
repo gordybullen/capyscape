@@ -52,7 +52,7 @@ class GameView {
     if (this.game.gameOver) {
       cancelAnimationFrame(this.animate.bind(this));
       this.menuTitle.innerHTML = "Try again? Jason needs you!";
-      this.menuText.innerHTML = "Hints: ...";
+      this.menuText.innerHTML = "Hints: Press the spacebar to place a corndog!";
       this.startButton.innerHTML = "Play Again";
       this.round = 1;
       return true;
@@ -68,7 +68,7 @@ class GameView {
         this.round = 1;
         cancelAnimationFrame(this.animate.bind(this));
         this.menuTitle.innerHTML = "YOU MADE IT!!!";
-        this.menuText.innerHTML = "Jason is with his fam.";
+        this.menuText.innerHTML = "Jason is reunited with his family.";
         this.startButton.innerHTML = "Play Again";
         return true;
       }
