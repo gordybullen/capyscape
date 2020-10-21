@@ -239,7 +239,6 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       }
 
       if (this.game.isOutOfBounds(this)) {
-        console.log("reset")
         this.pos = [500, 250];
       }
     }

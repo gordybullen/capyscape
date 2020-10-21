@@ -57,7 +57,6 @@ class Farmer extends MovingObject {
       }
 
       if (this.game.isOutOfBounds(this)) {
-        console.log("reset")
         this.pos = [500, 250];
       }
     }
