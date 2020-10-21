@@ -41,7 +41,7 @@ class Farmer extends MovingObject {
       this.image.src = "./farmer_walk_right.png";
     }
 
-    if (this.game.isOutOfBounds(this)) {
+    if (this.game.isAtBorder(this)) {
       if (this.isWrappable) {
         this.pos = this.game.wrap(this.pos);
       } else if (
@@ -54,6 +54,11 @@ class Farmer extends MovingObject {
         this.pos[1] + this.height > this.game.DIM_Y
       ) {
         this.vel[1] = -this.vel[1];
+      }
+
+      if (this.game.isOutOfBounds(this)) {
+        console.log("reset")
+        this.pos = [500, 250];
       }
     }
 
@@ -96,7 +101,6 @@ class Farmer extends MovingObject {
       this.height *= 1.1;
       this.speed *= 0.5;
       this.game.remove(stationaryObj);
-      // this.game.remove(this);
     }
     // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
     //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {

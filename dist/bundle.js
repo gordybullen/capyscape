@@ -223,7 +223,7 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       this.image.src = "./farmer_walk_right.png";
     }
 
-    if (this.game.isOutOfBounds(this)) {
+    if (this.game.isAtBorder(this)) {
       if (this.isWrappable) {
         this.pos = this.game.wrap(this.pos);
       } else if (
@@ -236,6 +236,11 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.pos[1] + this.height > this.game.DIM_Y
       ) {
         this.vel[1] = -this.vel[1];
+      }
+
+      if (this.game.isOutOfBounds(this)) {
+        console.log("reset")
+        this.pos = [500, 250];
       }
     }
 
@@ -278,7 +283,6 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
       this.height *= 1.1;
       this.speed *= 0.5;
       this.game.remove(stationaryObj);
-      // this.game.remove(this);
     }
     // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
     //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
@@ -460,7 +464,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [400, 300], game: this }));
+      this.add(new _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]({ pos: [500, 250], game: this }));
     }
   }
 
@@ -515,12 +519,21 @@ class Game {
     return [_util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[0], this.DIM_X), _util__WEBPACK_IMPORTED_MODULE_0__["default"].wrap(pos[1], this.DIM_Y)];
   }
 
-  isOutOfBounds(object) {
+  isAtBorder(object) {
     return (
       object.pos[0] < 0 + object.width ||
       object.pos[1] < 0 + object.height ||
       object.pos[0] > this.DIM_X - object.width ||
       object.pos[1] > this.DIM_Y - object.height
+    );
+  }
+
+  isOutOfBounds(object) {
+    return (
+      object.pos[0] < 0 - 10 ||
+      object.pos[1] < 0 - 10 ||
+      object.pos[0] > this.DIM_X + 10 ||
+      object.pos[1] > this.DIM_Y + 10
     );
   }
 

@@ -76,7 +76,7 @@ class Game {
 
   addFarmers() {
     for (let i = 0; i < this.NUM_FARMERS; i++) {
-      this.add(new Farmer({ pos: [400, 300], game: this }));
+      this.add(new Farmer({ pos: [500, 250], game: this }));
     }
   }
 
@@ -131,12 +131,21 @@ class Game {
     return [Util.wrap(pos[0], this.DIM_X), Util.wrap(pos[1], this.DIM_Y)];
   }
 
-  isOutOfBounds(object) {
+  isAtBorder(object) {
     return (
       object.pos[0] < 0 + object.width ||
       object.pos[1] < 0 + object.height ||
       object.pos[0] > this.DIM_X - object.width ||
       object.pos[1] > this.DIM_Y - object.height
+    );
+  }
+
+  isOutOfBounds(object) {
+    return (
+      object.pos[0] < 0 - 10 ||
+      object.pos[1] < 0 - 10 ||
+      object.pos[0] > this.DIM_X + 10 ||
+      object.pos[1] > this.DIM_Y + 10
     );
   }
 
