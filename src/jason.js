@@ -3,8 +3,8 @@ import MovingObject from "./moving_object";
 class Jason extends MovingObject {
   constructor(options) {
     super(options);
-    this.dx = 5;
-    this.dy = -5;
+    this.dx = 2.5;
+    this.dy = -2.5;
     this.sx = 0;
     this.sy = 0;
     this.sw = 28;
@@ -14,6 +14,18 @@ class Jason extends MovingObject {
     this.height = this.sh * this.scale;
     this.image = new Image();
     this.image.src = "./capy_walk_left.png";
+  }
+
+  direction() {
+    if (this.image.src.includes("right")) {
+      return "right";
+    } else if (this.image.src.includes("left")) {
+      return "left";
+    } else if (this.image.src.includes("up")) {
+      return "up";
+    } else if (this.image.src.includes("down")) {
+      return "down";
+    }
   }
 
   collideWithStationaryObject(stationaryObj) {
@@ -27,7 +39,6 @@ class Jason extends MovingObject {
     //     }
     // }
     if (this.isCollidedWith(stationaryObj)) {
-      debugger
       const obj1CenterPos = [
         this.pos[0] + this.width / 2,
         this.pos[1] + this.height / 2,

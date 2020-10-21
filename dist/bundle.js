@@ -123,6 +123,49 @@ class Bush {
 
 /***/ }),
 
+/***/ "./src/corndog.js":
+/*!************************!*\
+  !*** ./src/corndog.js ***!
+  \************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Corndog; });
+class Corndog {
+  constructor(options) {
+    this.sx = 0;
+    this.sy = 0;
+    this.sw = 460;
+    this.sh = 750;
+    this.scale = 0.1;
+    this.width = this.sw * this.scale;
+    this.height = this.sh * this.scale;
+    this.image = new Image();
+    this.image.src = "./corndog.png";
+    this.game = options.game;
+    this.pos = options.pos;
+  }
+
+  draw(ctx) {
+    ctx.drawImage(
+      this.image,
+      this.sx,
+      this.sy,
+      this.sw,
+      this.sh,
+      this.pos[0],
+      this.pos[1],
+      this.width,
+      this.height
+    );
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/farmer.js":
 /*!***********************!*\
   !*** ./src/farmer.js ***!
@@ -136,6 +179,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util */ "./src/util.js");
 /* harmony import */ var _jason__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./jason */ "./src/jason.js");
 /* harmony import */ var _bush__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./bush */ "./src/bush.js");
+/* harmony import */ var _corndog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./corndog */ "./src/corndog.js");
+
 
 
 
@@ -144,8 +189,8 @@ __webpack_require__.r(__webpack_exports__);
 class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(options) {
     super(options);
-    this.dx = 5;
-    this.dy = -5;
+    this.dx = 3;
+    this.dy = -3;
     this.sx = 0;
     this.sy = 0;
     this.sw = 27;
@@ -153,13 +198,14 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.scale = 3;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
-    this.image = new Image;
-    this.image.src = './farmer_walk_left.png';
-    this.speed = 3;
-    this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].randomVec(this.speed);
+    this.image = new Image();
+    this.image.src = "./farmer_walk_left.png";
+    this.speed = 2 * this.game.speedMultiplier;
+    this.vel = [1, 1]
+    // this.vel = Util.randomVec(this.speed);
     this.frames = 0;
     this.radius = 20;
-  };
+  }
 
   move(timeDelta = timeDelta || 1) {
     // timeDelta is number of milliseconds since last move
@@ -173,27 +219,36 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
 
     if (Math.sign(this.vel[0]) === -1) {
-      this.image.src = './farmer_walk_left.png';
+      this.image.src = "./farmer_walk_left.png";
     } else {
-      this.image.src = './farmer_walk_right.png';
+      this.image.src = "./farmer_walk_right.png";
     }
 
     if (this.game.isOutOfBounds(this)) {
       if (this.isWrappable) {
         this.pos = this.game.wrap(this.pos);
-      } else if (this.pos[0] + this.sw * 3 > this.game.DIM_X || this.pos[0] < 0) {
+      } else if (
+        this.pos[0] + this.width > this.game.DIM_X ||
+        this.pos[0] < 0
+      ) {
         this.vel[0] = -this.vel[0];
-      } else if (this.pos[1] < 0 || this.pos[1] + this.sh * 3 > this.game.DIM_Y) {
+      } else if (
+        this.pos[1] < 0 ||
+        this.pos[1] + this.height > this.game.DIM_Y
+      ) {
         this.vel[1] = -this.vel[1];
       }
     }
 
     // if Jason is in range of farmer, farmer will lock on to Jason
     if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) < 250) {
-      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(_util__WEBPACK_IMPORTED_MODULE_1__["default"].dir(
-        [-(this.pos[0] - this.game.jason.pos[0]), 
-        -(this.pos[1] - this.game.jason.pos[1])]
-        ), this.speed + 0.5);
+      this.vel = _util__WEBPACK_IMPORTED_MODULE_1__["default"].scale(
+        _util__WEBPACK_IMPORTED_MODULE_1__["default"].dir([
+          -(this.pos[0] - this.game.jason.pos[0]),
+          -(this.pos[1] - this.game.jason.pos[1]),
+        ]),
+        this.speed + 0.75
+      );
     }
 
     if (_util__WEBPACK_IMPORTED_MODULE_1__["default"].dist(this.pos, this.game.jason.pos) > 250 && !this.change) {
@@ -203,9 +258,9 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   collideWith(otherObject) {
-    if (otherObject instanceof Farmer && this.frames % 250 === 0) {
+    if (otherObject instanceof Farmer && this.frames % 100 === 0) {
       this.vel[0] = -this.vel[0];
-    } else if (otherObject instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"]) {
+    } else if (otherObject instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"] && this.frames % 100 === 0) {
       this.vel[0] = -this.vel[0];
     } else if (otherObject instanceof _jason__WEBPACK_IMPORTED_MODULE_2__["default"]) {
       this.game.lives -= 1;
@@ -217,10 +272,16 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   collideWithStationaryObject(stationaryObj) {
-    if (this.isCollidedWith(stationaryObj)) {
+    if (stationaryObj instanceof _bush__WEBPACK_IMPORTED_MODULE_3__["default"]) {
       this.vel[0] = -this.vel[0];
+    } else if (stationaryObj instanceof _corndog__WEBPACK_IMPORTED_MODULE_4__["default"]) {
+      this.width *= 1.1;
+      this.height *= 1.1;
+      this.speed *= 0.5;
+      this.game.remove(stationaryObj);
+      // this.game.remove(this);
     }
-    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] && 
+    // if (this.pos[0] < stationaryObj.pos[0] + stationaryObj.width && this.pos[0] + this.width > stationaryObj.pos[0] &&
     //   this.pos[1] < stationaryObj.pos[1] + stationaryObj.height && this.pos[1] + this.height > stationaryObj.pos[1]) {
     //       this.vel[0] = -this.vel[0];
     // }
@@ -228,23 +289,34 @@ class Farmer extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   draw(ctx) {
     this.frames += 1;
-    
+
     // moves from the farmer walk sprite sheet over time
     if (this.frames % 10 === 0) {
       this.sx += 27;
     }
-    
+
     // loop back to beginning of the sheet once we get to the last frame
     if (this.sx > 189) {
       this.sx = 0;
       this.frames = 0;
     }
-    
-    ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
-  };
-};
+
+    ctx.drawImage(
+      this.image,
+      this.sx,
+      this.sy,
+      this.sw,
+      this.sh,
+      this.pos[0],
+      this.pos[1],
+      this.width,
+      this.height
+    );
+  }
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (Farmer);
+
 
 /***/ }),
 
@@ -264,17 +336,27 @@ class Forest {
     this.sy = 0;
     this.sw = 368;
     this.sh = 640;
-    this.scale = 0.5;
+    this.scale = 0.4;
     this.width = this.sw * this.scale;
     this.height = this.sh * this.scale;
-    this.image = new Image;
-    this.image.src = './forest_side.png';
+    this.image = new Image();
+    this.image.src = "./forest_side.png";
     this.game = options.game;
     this.pos = options.pos;
   }
 
   draw(ctx) {
-    ctx.drawImage(this.image, this.sx, this.sy, this.sw, this.sh, this.pos[0], this.pos[1], this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.sx,
+      this.sy,
+      this.sw,
+      this.sh,
+      this.pos[0],
+      this.pos[1],
+      this.width,
+      this.height
+    );
     // ctx.beginPath();
     // ctx.arc(this.pos[0], this.pos[1], 20, 0, 2 * Math.PI);
     // ctx.fillStyle = "rgb(224, 197, 121)";
@@ -282,6 +364,7 @@ class Forest {
     // ctx.closePath();
   }
 }
+
 
 /***/ }),
 
@@ -299,6 +382,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _farmer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./farmer */ "./src/farmer.js");
 /* harmony import */ var _forest__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./forest */ "./src/forest.js");
 /* harmony import */ var _bush__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./bush */ "./src/bush.js");
+/* harmony import */ var _corndog__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./corndog */ "./src/corndog.js");
+
 
 
 
@@ -306,23 +391,30 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const BUSH_POSITIONS = [
-  [1200 / 1.5, 0 + 75],
-  [1200 / 1.5, 600 / 2 + 50],
+  [200, 0 + 75],
+  [200, 600 / 2 + 50],
+  [200, 300 - 168 / 2],
 ];
 
 class Game {
-  constructor() {
+  constructor(ctx, levelData) {
     this.DIM_X = 1200;
     this.DIM_Y = 600;
     this.BG_COLOR = "green";
     this.BG_IMAGE = new Image();
     this.BG_IMAGE.src = "crops_overhead.jpeg";
-    this.NUM_FARMERS = 8;
-    this.NUM_BUSHES = 2;
+    this.NUM_FARMERS = levelData.numFarmers;
+    this.NUM_BUSHES = levelData.numBushes;
+    this.NUM_CORNDOGS = 10 + levelData.corndogsAdded;
+    this.speedMultiplier = levelData.farmerSpeedMultiplier;
     this.jason = new _jason__WEBPACK_IMPORTED_MODULE_1__["default"]({ pos: [this.DIM_X - 84, 0], game: this });
     this.farmers = [];
     this.bushes = [];
-    this.forest = new _forest__WEBPACK_IMPORTED_MODULE_3__["default"]({ pos: [0, this.DIM_Y / 4], game: this });
+    this.corndogs = [];
+    this.forest = new _forest__WEBPACK_IMPORTED_MODULE_3__["default"]({
+      pos: [0, this.DIM_Y / 2 - 256 / 2],
+      game: this,
+    });
     this.lives = 3;
     this.reset = false;
     this.gameOver = false;
@@ -336,13 +428,21 @@ class Game {
       this.farmers.push(object);
     } else if (object instanceof _bush__WEBPACK_IMPORTED_MODULE_4__["default"]) {
       this.bushes.push(object);
+    } else if (object instanceof _corndog__WEBPACK_IMPORTED_MODULE_5__["default"]) {
+      this.corndogs.push(object);
     } else {
       throw new Error("unknown type of object");
     }
   }
 
   allObjects() {
-    return [].concat(this.jason, this.farmers, this.bushes, this.forest);
+    return [].concat(
+      this.jason,
+      this.farmers,
+      this.bushes,
+      this.forest,
+      this.corndogs
+    );
   }
 
   allMovingObjects() {
@@ -351,6 +451,10 @@ class Game {
 
   automatedObjects() {
     return [].concat(this.farmers);
+  }
+
+  stationaryObjects() {
+    return [].concat(this.bushes, this.corndogs);
   }
 
   addFarmers() {
@@ -362,6 +466,30 @@ class Game {
   addBushes() {
     for (let i = 0; i < this.NUM_BUSHES; i++) {
       this.add(new _bush__WEBPACK_IMPORTED_MODULE_4__["default"]({ pos: BUSH_POSITIONS[i], game: this }));
+    }
+  }
+
+  addCorndog() {
+    if (this.NUM_CORNDOGS > 0) {
+      this.NUM_CORNDOGS -= 1;
+
+      let pos = Array.from(this.jason.pos);
+      switch (this.jason.direction()) {
+        case "left":
+          pos = [pos[0] - this.jason.width / 2, pos[1]];
+          break;
+        case "right":
+          pos = [pos[0] + this.jason.width, pos[1]];
+          break;
+        case "up":
+          pos = [pos[0], (pos[1] -= 50)];
+          break;
+        case "down":
+          pos = [pos[0], (pos[1] += 50)];
+          break;
+      }
+
+      this.add(new _corndog__WEBPACK_IMPORTED_MODULE_5__["default"]({ pos, game: this }));
     }
   }
 
@@ -388,25 +516,11 @@ class Game {
 
   isOutOfBounds(object) {
     return (
-      object.pos[0] < 0 + object.sw ||
-      object.pos[1] < 0 + object.sh ||
-      object.pos[0] > this.DIM_X - object.sw * 3 ||
-      object.pos[1] > this.DIM_Y - object.sh * 3
+      object.pos[0] < 0 + object.width ||
+      object.pos[1] < 0 + object.height ||
+      object.pos[0] > this.DIM_X - object.width ||
+      object.pos[1] > this.DIM_Y - object.height
     );
-  }
-
-  checkFarmerCollisions() {
-    for (let i = 0; i < this.NUM_FARMERS; i++) {
-      for (let j = 0; j < this.NUM_FARMERS; j++) {
-        const obj1 = this.farmers[i];
-        const obj2 = this.farmers[j];
-
-        if (obj1.isCollidedWith(obj2) && obj1 !== obj2) {
-          const collision = obj1.collideWith(obj2);
-          if (collision) return;
-        }
-      }
-    }
   }
 
   checkMovingObjectCollisions() {
@@ -426,7 +540,7 @@ class Game {
   }
 
   checkJasonStationaryObjectCollisions() {
-    for (let i = 0; i < this.NUM_BUSHES; i++) {
+    for (let i = 0; i < this.bushes.length; i++) {
       const stationaryObj = this.bushes[i];
       const collided = this.jason.isCollidedWith(stationaryObj);
       if (collided) this.jason.collideWithStationaryObject(stationaryObj);
@@ -434,9 +548,10 @@ class Game {
   }
 
   checkFarmerStationaryObjectCollisions() {
-    for (let i = 0; i < this.NUM_BUSHES; i++) {
-      for (let j = 0; j < this.NUM_FARMERS; j++) {
-        const stationaryObj = this.bushes[i];
+    const stationaryObjects = this.stationaryObjects();
+    for (let i = 0; i < stationaryObjects.length; i++) {
+      for (let j = 0; j < this.farmers.length; j++) {
+        const stationaryObj = stationaryObjects[i];
         const collided = this.farmers[j].isCollidedWith(stationaryObj);
         if (collided)
           this.farmers[j].collideWithStationaryObject(stationaryObj);
@@ -444,21 +559,29 @@ class Game {
     }
   }
 
+  remove(object) {
+    if (object instanceof _farmer__WEBPACK_IMPORTED_MODULE_2__["default"]) {
+      this.farmers.splice(this.farmers.indexOf(object), 1);
+    } else if (object instanceof _corndog__WEBPACK_IMPORTED_MODULE_5__["default"]) {
+      this.corndogs.splice(this.bushes.indexOf(object), 1);
+    }
+  }
+
+  passedRound() {
+    return (
+      this.jason.pos[0] === 0 &&
+      this.jason.pos[1] > this.forest.pos[1] &&
+      this.jason.pos[1] < this.forest.pos[1] + this.forest.height
+    );
+  }
+
   step(timeDelta) {
+    console.log(this.farmers);
     this.moveObjects(timeDelta);
-    this.checkFarmerCollisions();
     this.checkJasonStationaryObjectCollisions();
     this.checkFarmerStationaryObjectCollisions();
     this.checkMovingObjectCollisions();
   }
-
-  // remove(object) {
-  //   if (object instanceof Farmer) {
-  //     this.farmers.splice(this.farmers.indexOf(object), 1);
-  //   } else if (object instanceof Bush) {
-  //     this.bushes.splice(this.bushes.indexOf(object), 1);
-  //   }
-  // }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Game);
@@ -476,20 +599,21 @@ class Game {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
-/* harmony import */ var _jason__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./jason */ "./src/jason.js");
+/* harmony import */ var _levels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./levels */ "./src/levels.js");
 
 
 
 class GameView {
   constructor(ctx) {
     this.ctx = ctx;
-    // this.game = new Game();
     this.lastTime = 0;
     this.gameMenu = document.getElementById("start-menu");
     this.startButton = document.querySelector(".start-button");
-    // this.menuTitle = document.querySelector(".menu-title");
-    // this.menuText = document.querySelector(".menu-text");
+    this.menuTitle = document.querySelector(".menu-title");
+    this.menuText = document.querySelector(".menu-text");
     this.inProgress = false;
+    this.gameInfo = document.querySelector(".game-info");
+    this.corndogs = document.querySelector(".corndogs");
     this.lives = document.querySelector(".lives");
     this.round = 1;
 
@@ -497,7 +621,7 @@ class GameView {
   }
 
   start() {
-    this.game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](this.ctx);
+    this.game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](this.ctx, _levels__WEBPACK_IMPORTED_MODULE_1__["default"][this.round]);
     this.inProgress = true;
 
     requestAnimationFrame(this.animate.bind(this));
@@ -507,13 +631,14 @@ class GameView {
     const timeDelta = time - this.lastTime;
 
     this.lives.innerHTML = `Lives: ${this.game.lives}`;
+    this.corndogs.innerHTML = `Corndogs: ${this.game.NUM_CORNDOGS}`;
     this.game.step(timeDelta);
     this.game.draw(this.ctx);
     this.lastTime = time;
 
     if (this.roundOver()) {
       this.gameMenu.classList.toggle("hide");
-      this.lives.classList.toggle("hide");
+      this.gameInfo.classList.toggle("hide");
       this.inProgress = false;
     } else if (this.game.reset) {
       this.game.jason.pos = [this.game.DIM_X - 84, 0];
@@ -528,36 +653,35 @@ class GameView {
   roundOver() {
     if (this.game.gameOver) {
       cancelAnimationFrame(this.animate.bind(this));
-      this.round += 1;
-
-      // this.menuTitle.innerHTML = levels[this.round].menuTitle;
-      // this.menuText.innerHTML = levels[this.round].menuText;
-
-      // if (this.round < 5) {
-      //   this.startButton.innerHTML = "Start";
-      // } else {
-      //   this.startButton.innerHTML = "Play Again";
-      //   this.round = 1;
-      // }
-
+      this.menuTitle.innerHTML = "Try again? Jason needs you!";
+      this.menuText.innerHTML = "Hints: ...";
+      this.startButton.innerHTML = "Play Again";
+      this.round = 1;
       return true;
-      // } else if (this.game.lost()) {
-      //   window.cancelAnimationFrame(this.animationRequestId);
-      //   this.menuTitle.innerHTML = "Not Quite!";
-      //   this.menuText.innerHTML =
-      //     "";
-      //   this.startButton.innerHTML = "Play Again";
-
-      //   this.round = 1;
-      //   return true;
+    } else if (this.game.passedRound()) {
+      this.round += 1;
+      if (this.round !== 4) {
+        cancelAnimationFrame(this.animate.bind(this));
+        this.menuTitle.innerHTML = _levels__WEBPACK_IMPORTED_MODULE_1__["default"][this.round].menuTitle;
+        this.menuText.innerHTML = _levels__WEBPACK_IMPORTED_MODULE_1__["default"][this.round].menuText;
+        this.startButton.innerHTML = "Keep going";
+        return true;
+      } else {
+        this.round = 1;
+        cancelAnimationFrame(this.animate.bind(this));
+        this.menuTitle.innerHTML = "YOU MADE IT!!!";
+        this.menuText.innerHTML = "Jason is with his fam.";
+        this.startButton.innerHTML = "Play Again";
+        return true;
+      }
     }
-
     return false;
   }
 
   bindMenuHandlers() {
     const startGame = () => {
       this.gameMenu.classList.toggle("hide");
+      this.gameInfo.classList.toggle("hide");
       this.start();
     };
 
@@ -567,6 +691,10 @@ class GameView {
 
     window.addEventListener("keydown", (e) => {
       if (e.keyCode === 13 && !this.inProgress) startGame();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.keyCode === 32 && this.inProgress) this.game.addCorndog();
     });
   }
 }
@@ -647,8 +775,8 @@ __webpack_require__.r(__webpack_exports__);
 class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(options) {
     super(options);
-    this.dx = 5;
-    this.dy = -5;
+    this.dx = 2.5;
+    this.dy = -2.5;
     this.sx = 0;
     this.sy = 0;
     this.sw = 28;
@@ -658,6 +786,18 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.height = this.sh * this.scale;
     this.image = new Image();
     this.image.src = "./capy_walk_left.png";
+  }
+
+  direction() {
+    if (this.image.src.includes("right")) {
+      return "right";
+    } else if (this.image.src.includes("left")) {
+      return "left";
+    } else if (this.image.src.includes("up")) {
+      return "up";
+    } else if (this.image.src.includes("down")) {
+      return "down";
+    }
   }
 
   collideWithStationaryObject(stationaryObj) {
@@ -671,7 +811,6 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
     //     }
     // }
     if (this.isCollidedWith(stationaryObj)) {
-      debugger
       const obj1CenterPos = [
         this.pos[0] + this.width / 2,
         this.pos[1] + this.height / 2,
@@ -778,6 +917,51 @@ class Jason extends _moving_object__WEBPACK_IMPORTED_MODULE_0__["default"] {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Jason);
+
+
+/***/ }),
+
+/***/ "./src/levels.js":
+/*!***********************!*\
+  !*** ./src/levels.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const levels = {
+  1: {
+    numFarmers: 1,
+    farmerSpeedMultiplier: 1,
+    numBushes: 0,
+    corndogsAdded: 0,
+    menuTitle:
+      "You made it out of this pasture, but the farmers are still looking for you!",
+    menuText:
+      "Hint: Farmers love corndogs. Make sure to place strategic corndogs to slow a farmer in his tracks!",
+  },
+  2: {
+    numFarmers: 2,
+    farmerSpeedMultiplier: 1.5,
+    numBushes: 2,
+    corndogsAdded: 3,
+    menuTitle: "You made it out of this pasture, but the farmers are still looking for you!",
+    menuText:
+      "Hint: Farmers love corndogs. Make sure to place strategic corndogs to slow a farmer in his tracks",
+  },
+  3: {
+    numFarmers: 3,
+    farmerSpeedMultiplier: 1.75,
+    numBushes: 3,
+    corndogsAdded: 1,
+    menuTitle: "Watch out, Farmer Ats' is gathering his friends!",
+    menuText:
+      "Hint: Try not get stuck in corner! Give yourself some escape routes.",
+  },
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (levels);
 
 
 /***/ }),

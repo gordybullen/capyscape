@@ -9,7 +9,12 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 400px;
+  /* margin-left: 400px; */
+}
+
+h1 {
+  font-size: 40px;
+  font-family: ;
 }
 
 main {
@@ -67,16 +72,25 @@ main {
   box-sizing: content-box;
 }
 
-.lives {
+.game-info {
+  border: 1px solid white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 400px;
+  height: 40px;
+  position: absolute;
+  margin-left: 800px;
+  padding: 10px;
+}
+
+.lives, .corndogs {
   color: black;
-  height: 30px;
-  width: 200px;
-  color: black;
-  margin-left: 200px;
   font-size: 30px;
 }
 
-.game-menu.hide, .lives.hide {
+.game-menu.hide, .game-info.hide {
   opacity: 0;
 }
 
